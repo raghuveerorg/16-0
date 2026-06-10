@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>16-0 — Can your all-time IPL XI go unbeaten?</title>
+<style>
+  :root{
+    --bg:#0c1020; --bg2:#141a30; --card:#1b2240; --card2:#232c52;
+    --line:#2c3563; --txt:#eaf0ff; --mut:#9aa6cf; --acc:#ff5a36; --acc2:#ffb020;
+    --bat:#37c2ff; --bowl:#7cf07c; --good:#3ddc84; --bad:#ff5a5a; --gold:#ffcf45;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#1a2240,transparent),var(--bg);
+    color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.45}
+  .wrap{max-width:720px;margin:0 auto;padding:18px 16px 60px}
+  header{text-align:center;padding:14px 0 6px}
+  .logo{font-weight:900;font-size:40px;letter-spacing:-1px;
+    background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .logo small{display:block;font-size:13px;font-weight:600;letter-spacing:.5px;color:var(--mut);
+    -webkit-text-fill-color:var(--mut);margin-top:2px}
+  .tag{color:var(--mut);font-size:14px;margin:2px 0 0}
+  .btn{display:inline-block;border:0;cursor:pointer;font-weight:800;border-radius:12px;
+    padding:14px 22px;font-size:16px;color:#180a06;background:linear-gradient(90deg,var(--acc),var(--acc2));
+    box-shadow:0 6px 18px rgba(255,90,54,.3);transition:transform .08s}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line);box-shadow:none}
+  .btn.sm{padding:9px 14px;font-size:13px;border-radius:10px}
+  .center{text-align:center}
+  .hidden{display:none!important}
+
+  /* HUD */
+  .hud{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+  .pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:12.5px;color:var(--mut)}
+  .pill b{color:var(--txt)}
+  .pill.warn b{color:var(--bad)}
+
+  /* slot banner */
+  .slot{background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid var(--line);
+    border-radius:16px;padding:16px;text-align:center;margin:10px 0 14px}
+  .slot .role{font-size:24px;font-weight:900;letter-spacing:.3px}
+  .slot .era{display:inline-block;margin-top:6px;font-size:12.5px;color:var(--acc2);
+    border:1px dashed var(--acc2);border-radius:999px;padding:3px 10px}
+  .slot .rnd{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:1.5px}
+
+  /* player grid */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:520px){.grid{grid-template-columns:1fr}}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;
+    transition:border-color .12s,transform .08s;position:relative}
+  .pcard:hover{border-color:var(--acc)}
+  .pcard:active{transform:translateY(1px)}
+  .pcard.disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.5)}
+  .pcard .nm{font-weight:800;font-size:15px}
+  .pcard .meta{font-size:11.5px;color:var(--mut);margin:2px 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .flag{font-size:13px}
+  .os{background:#3a2440;color:#ff9ad1;border:1px solid #5a3056;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:700}
+  .ind{background:#1f3a2a;color:#9affc4;border:1px solid #2f5a40;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:700}
+  .eratag{background:#23284a;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:10px;color:var(--acc2)}
+  .eramatch{box-shadow:0 0 0 1.5px var(--acc2) inset}
+  .bar{height:7px;border-radius:6px;background:#0e1226;overflow:hidden;margin:4px 0}
+  .bar > i{display:block;height:100%}
+  .lab{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut)}
+
+  /* roster strip */
+  .roster{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
+  .rchip{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:5px 9px;font-size:11.5px}
+  .rchip.empty{border-style:dashed;color:var(--mut)}
+  .rchip.cap{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+  .rchip .r{color:var(--mut);font-size:9.5px;display:block;text-transform:uppercase;letter-spacing:.5px}
+
+  /* result */
+  .record{font-size:74px;font-weight:900;text-align:center;letter-spacing:-2px;line-height:1;margin:6px 0}
+  .verdict{text-align:center;font-size:18px;font-weight:800;margin:4px 0 2px}
+  .story{text-align:center;color:var(--mut);font-size:14px;margin:0 0 14px}
+  .breakdown{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+  .brow{margin:9px 0}
+  .brow .lab{font-size:12.5px;color:var(--txt);margin-bottom:3px}
+  .sharecard{border:1px solid var(--line);border-radius:16px;
+    padding:16px;margin:14px 0;background:linear-gradient(160deg,#1a2142,#0e1430)}
+  .sharecard h3{margin:0 0 2px;font-size:15px}
+  .footer{color:var(--mut);font-size:11px;text-align:center;margin-top:26px;line-height:1.6}
+  a{color:var(--acc2)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000a;border:1px solid var(--line);
+    padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">16-0<small>ALL-TIME IPL · UNBEATEN CHALLENGE</small></div>
+    <p class="tag" id="tag">Draft an all-time XI. Win all 14 league games, Qualifier 1 and the Final. Go 16-0.</p>
+  </header>
+
+  <!-- START -->
+  <section id="start" class="center">
+    <div class="slot" style="text-align:left">
+      <div class="role" style="font-size:18px;margin-bottom:8px">How it works</div>
+      <div style="color:var(--mut);font-size:14px">
+        ① Across 11 rounds, a slot locks a <b style="color:var(--txt)">role</b> + a bonus <b style="color:var(--acc2)">era</b>. Pick the best player.<br><br>
+        ② Hard rules: <b style="color:var(--txt)">max 4 overseas</b>, your XI auto-covers 20 overs of bowling, exactly one keeper.<br><br>
+        ③ Spread your picks across eras. Pick a captain.<br><br>
+        ④ The engine simulates 16 games on a non-linear win curve — a perfect <b style="color:var(--txt)">16-0</b> needs batting <i>and</i> bowling firing together.
+      </div>
+    </div>
+    <button class="btn" onclick="startGame()">Start the draft →</button>
+  </section>
+
+  <!-- DRAFT -->
+  <section id="draft" class="hidden">
+    <div class="hud">
+      <div class="pill">Round <b id="rnum">1</b>/11</div>
+      <div class="pill" id="osPill">Overseas <b id="osCount">0</b>/4</div>
+      <div class="pill">Eras <b id="eraCount">0</b>/4</div>
+      <div class="pill">Skips <b id="skips">1</b></div>
+    </div>
+
+    <div class="slot">
+      <div class="rnd">Now drafting</div>
+      <div class="role" id="slotRole">Opener</div>
+      <div class="era" id="slotEra">Bonus era: 2008–12</div>
+    </div>
+
+    <div class="center" style="margin:-4px 0 12px">
+      <button class="btn ghost sm" id="skipBtn" onclick="skipEra()">↻ Re-roll bonus era (×<span id="skipN">1</span>)</button>
+    </div>
+
+    <div class="grid" id="pool"></div>
+
+    <div class="roster" id="roster"></div>
+  </section>
+
+  <!-- CAPTAIN -->
+  <section id="captain" class="hidden">
+    <div class="slot"><div class="role" style="font-size:20px">Pick your captain 🧢</div>
+      <div style="color:var(--mut);font-size:13px;margin-top:6px">Tap a player. A great leader is worth a few clutch wins.</div></div>
+    <div class="roster" id="capRoster"></div>
+    <div class="center"><button class="btn" id="simBtn" disabled onclick="simulate()">Simulate the season →</button></div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="hidden">
+    <div class="record" id="record">14-2</div>
+    <div class="verdict" id="verdict"></div>
+    <div class="story" id="story"></div>
+
+    <div class="breakdown">
+      <div class="brow"><div class="lab"><span>Batting power</span><span id="batPct"></span></div>
+        <div class="bar"><i id="batBar" style="background:var(--bat)"></i></div></div>
+      <div class="brow"><div class="lab"><span>Bowling power</span><span id="bowlPct"></span></div>
+        <div class="bar"><i id="bowlBar" style="background:var(--bowl)"></i></div></div>
+      <div class="brow"><div class="lab"><span>Balance</span><span id="balPct"></span></div>
+        <div class="bar"><i id="balBar" style="background:var(--acc2)"></i></div></div>
+      <div class="brow"><div class="lab"><span>Overall strength</span><span id="strPct"></span></div>
+        <div class="bar"><i id="strBar" style="background:linear-gradient(90deg,var(--acc),var(--acc2))"></i></div></div>
+    </div>
+
+    <div class="sharecard" id="shareCard">
+      <h3 id="scTitle">My all-time IPL XI went 14-2</h3>
+      <div style="color:var(--mut);font-size:12.5px" id="scLine"></div>
+      <div class="roster" id="scRoster" style="margin-top:10px"></div>
+    </div>
+
+    <div class="center">
+      <button class="btn sm" onclick="copyShare()">📋 Copy for WhatsApp</button>
+      <button class="btn ghost sm" onclick="location.reload()">↻ Play again</button>
+    </div>
+  </section>
+
+  <div class="footer">
+    Prototype. Player ratings are <b>illustrative approximations</b> for demo purposes, not verified stats.<br>
+    16-0 is an independent concept and is <b>not affiliated with, endorsed by, or sponsored by the BCCI or the IPL</b>.
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- DATA (illustrative ratings, 0-100, era-adjusted feel) ---------- */
+// era: 1=2008-12, 2=2013-17, 3=2018-22, 4=2023-26 | os: overseas
+const ERA = {1:"2008–12",2:"2013–17",3:"2018–22",4:"2023–26"};
+const P = [
+  // OPENER
+  ["Virender Sehwag","OPENER",false,1,85,5],["Gautam Gambhir","OPENER",false,1,80,0],
+  ["Chris Gayle","OPENER",true,2,95,10],["David Warner","OPENER",true,2,92,0],
+  ["Rohit Sharma","OPENER",false,2,86,5],["Shikhar Dhawan","OPENER",false,3,82,0],
+  ["KL Rahul","OPENER",false,3,84,0],["Travis Head","OPENER",true,4,88,0],
+  ["Yashasvi Jaiswal","OPENER",false,4,83,0],["Ruturaj Gaikwad","OPENER",false,4,82,0],
+  // BAT (middle order)
+  ["Suresh Raina","BAT",false,1,84,20],["Shaun Marsh","BAT",true,1,82,0],
+  ["Manish Pandey","BAT",false,2,75,0],["Virat Kohli","BAT",false,3,93,0],
+  ["AB de Villiers","BAT",true,3,96,0],["Steve Smith","BAT",true,3,80,0],
+  ["Faf du Plessis","BAT",true,3,83,0],["Shreyas Iyer","BAT",false,3,80,0],
+  ["Devdutt Padikkal","BAT",false,4,74,0],
+  // FINISHER
+  ["Yusuf Pathan","FINISHER",false,1,78,35],["Kieron Pollard","FINISHER",true,2,85,40],
+  ["Kedar Jadhav","FINISHER",false,2,70,30],["Tim David","FINISHER",true,4,80,0],
+  ["Rinku Singh","FINISHER",false,4,79,0],["Shivam Dube","FINISHER",false,4,77,30],
+  // KEEPER
+  ["MS Dhoni","KEEPER",false,2,88,0],["Robin Uthappa","KEEPER",false,2,78,0],
+  ["Rishabh Pant","KEEPER",false,3,85,0],["Dinesh Karthik","KEEPER",false,3,76,0],
+  ["Quinton de Kock","KEEPER",true,3,85,0],["Sanju Samson","KEEPER",false,4,84,0],
+  ["Jos Buttler","KEEPER",true,4,90,0],["Heinrich Klaasen","KEEPER",true,4,90,0],
+  ["Nicholas Pooran","KEEPER",true,4,86,0],
+  // ALLROUNDER
+  ["Yuvraj Singh","ALLROUNDER",false,1,78,50],["Shane Watson","ALLROUNDER",true,2,85,60],
+  ["Dwayne Bravo","ALLROUNDER",true,2,60,84],["Andre Russell","ALLROUNDER",true,3,88,70],
+  ["Hardik Pandya","ALLROUNDER",false,3,80,65],["Ravindra Jadeja","ALLROUNDER",false,3,70,80],
+  ["Glenn Maxwell","ALLROUNDER",true,3,82,45],["Krunal Pandya","ALLROUNDER",false,3,62,70],
+  ["Sunil Narine","ALLROUNDER",true,4,78,85],["Axar Patel","ALLROUNDER",false,4,65,78],
+  ["Marcus Stoinis","ALLROUNDER",true,4,75,55],
+  // SPIN
+  ["Amit Mishra","SPIN",false,1,12,82],["Piyush Chawla","SPIN",false,1,15,78],
+  ["Harbhajan Singh","SPIN",false,1,25,80],["Ravichandran Ashwin","SPIN",false,2,30,84],
+  ["Rashid Khan","SPIN",true,3,35,95],["Yuzvendra Chahal","SPIN",false,3,10,88],
+  ["Imran Tahir","SPIN",true,3,8,86],["Varun Chakravarthy","SPIN",false,4,8,85],
+  ["Kuldeep Yadav","SPIN",false,4,10,84],
+  // PACE
+  ["Lasith Malinga","PACE",true,2,6,92],["Bhuvneshwar Kumar","PACE",false,3,20,85],
+  ["Jasprit Bumrah","PACE",false,3,8,96],["Trent Boult","PACE",true,3,10,88],
+  ["Kagiso Rabada","PACE",true,3,12,88],["Mohammed Shami","PACE",false,3,10,85],
+  ["Jofra Archer","PACE",true,3,15,87],["Harshal Patel","PACE",false,3,12,82],
+  ["Deepak Chahar","PACE",false,3,18,80],["Mohammed Siraj","PACE",false,4,8,83],
+  ["T Natarajan","PACE",false,4,6,80],["Anrich Nortje","PACE",true,4,6,84],
+  ["Pat Cummins","PACE",true,4,50,84],
+].map((a,i)=>({id:i,name:a[0],role:a[1],os:a[2],era:a[3],bat:a[4],bowl:a[5]}));
+
+const ROLE_LABEL={OPENER:"Opener",BAT:"Middle order",FINISHER:"Finisher",KEEPER:"Wicket-keeper",
+  ALLROUNDER:"All-rounder",SPIN:"Spinner",PACE:"Fast bowler"};
+const SLOTS=["OPENER","OPENER","BAT","BAT","FINISHER","KEEPER","ALLROUNDER","ALLROUNDER","SPIN","PACE","PACE"];
+
+/* ---------- STATE ---------- */
+let round=0, xi=[], usedIds=new Set(), bonusEra=1, skipsLeft=1, captainId=null;
+
+const $=id=>document.getElementById(id);
+function show(id){["start","draft","captain","result"].forEach(s=>$(s).classList.toggle("hidden",s!==id));}
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1400);}
+function osCount(){return xi.filter(p=>p.os).length;}
+function eraSet(){return new Set(xi.map(p=>p.era));}
+
+function startGame(){round=0;xi=[];usedIds.clear();skipsLeft=1;captainId=null;show("draft");nextRound();}
+
+function nextRound(){
+  if(round>=11){toCaptain();return;}
+  bonusEra=1+Math.floor(Math.random()*4);
+  renderRound();
+}
+
+function renderRound(){
+  const role=SLOTS[round];
+  $("rnum").textContent=round+1;
+  $("slotRole").textContent=ROLE_LABEL[role];
+  $("slotEra").textContent="Bonus era: "+ERA[bonusEra];
+  $("osCount").textContent=osCount();
+  $("eraCount").textContent=eraSet().size;
+  $("skips").textContent=skipsLeft;
+  $("skipN").textContent=skipsLeft;
+  $("skipBtn").disabled=skipsLeft<=0;
+  $("osPill").classList.toggle("warn",osCount()>=4);
+
+  const overseasFull=osCount()>=4;
+  const cands=P.filter(p=>p.role===role && !usedIds.has(p.id))
+    .sort((a,b)=> (b.bat+b.bowl)-(a.bat+a.bowl));
+  $("pool").innerHTML=cands.map(p=>{
+    const blocked=p.os&&overseasFull;
+    const match=p.era===bonusEra;
+    return `<div class="pcard ${blocked?'disabled':''} ${match?'eramatch':''}" ${blocked?'':`onclick="pick(${p.id})"`}>
+      <div class="nm">${p.name}</div>
+      <div class="meta">
+        <span class="${p.os?'os':'ind'}">${p.os?'OVERSEAS':'INDIAN'}</span>
+        <span class="eratag">${ERA[p.era]}${match?' ★':''}</span>
+        ${blocked?'<span style="color:var(--bad)">overseas full</span>':''}
+      </div>
+      <div class="lab"><span>Bat</span><span>${p.bat}</span></div>
+      <div class="bar"><i style="width:${p.bat}%;background:var(--bat)"></i></div>
+      <div class="lab"><span>Bowl</span><span>${p.bowl}</span></div>
+      <div class="bar"><i style="width:${p.bowl}%;background:var(--bowl)"></i></div>
+    </div>`;
+  }).join("");
+  renderRoster("roster",false);
+}
+
+function renderRoster(elId,clickable){
+  let html="";
+  for(let i=0;i<11;i++){
+    const p=xi[i];
+    if(p){
+      const cap=clickable&&captainId===p.id;
+      html+=`<div class="rchip ${cap?'cap':''}" ${clickable?`onclick="setCap(${p.id})"`:''}>
+        <span class="r">${ROLE_LABEL[SLOTS[i]]}${cap?' · C':''}</span>${p.name}</div>`;
+    } else if(!clickable){
+      html+=`<div class="rchip empty"><span class="r">${ROLE_LABEL[SLOTS[i]]}</span>—</div>`;
+    }
+  }
+  $(elId).innerHTML=html;
+}
+
+function pick(id){
+  const p=P.find(x=>x.id===id);
+  if(p.os&&osCount()>=4){toast("Max 4 overseas players");return;}
+  xi[round]=p;usedIds.add(id);round++;
+  nextRound();
+}
+
+function skipEra(){
+  if(skipsLeft<=0)return;
+  skipsLeft--;
+  bonusEra=1+Math.floor(Math.random()*4);
+  renderRound();
+}
+
+function toCaptain(){
+  show("captain");
+  renderCapRoster();
+}
+function renderCapRoster(){
+  $("capRoster").innerHTML=xi.map(p=>{
+    const cap=captainId===p.id;
+    return `<div class="rchip ${cap?'cap':''}" onclick="setCap(${p.id})">
+      <span class="r">${cap?'CAPTAIN':ROLE_LABEL[p.role]}</span>${p.name}</div>`;
+  }).join("");
+}
+function setCap(id){captainId=id;renderCapRoster();$("simBtn").disabled=false;}
+
+/* ---------- SIMULATION ---------- */
+function sigmoid(x){return 1/(1+Math.exp(-x));}
+function simulate(){
+  // batting: avg of top-7 bat ratings
+  const bats=xi.map(p=>p.bat).sort((a,b)=>b-a).slice(0,7);
+  const bn=(bats.reduce((a,b)=>a+b,0)/7)/100;
+  // bowling: the 5 designated bowler slots (idx 6..10)
+  const bowlers=[xi[6],xi[7],xi[8],xi[9],xi[10]];
+  const bw=(bowlers.reduce((a,p)=>a+p.bowl,0)/5)/100;
+
+  const raw=Math.sqrt(bn*bw);
+  const balance=1-Math.abs(bn-bw);
+
+  // era factor
+  const eras=eraSet().size;
+  let eraF={1:0.90,2:0.95,3:1.00,4:1.03}[eras];
+
+  // captain factor
+  const cap=xi.find(p=>p.id===captainId);
+  const capF=Math.min(1.03, 1 + ((cap.bat+cap.bowl)/100)*0.03);
+
+  const strength=raw*(0.6+0.4*balance)*eraF*capF;
+  let wins=Math.round(16*sigmoid(13*(strength-0.65)));
+  wins=Math.max(0,Math.min(16,wins));
+  const losses=16-wins;
+
+  renderResult({wins,losses,bn,bw,balance,strength,bats,bowlers,cap});
+}
+
+function renderResult(r){
+  show("result");
+  $("record").textContent=`${r.wins}-${r.losses}`;
+  $("record").style.color = r.wins===16?'var(--gold)':r.wins>=14?'var(--good)':r.wins<=6?'var(--bad)':'var(--txt)';
+
+  let v,story;
+  const topBat=xi.slice().sort((a,b)=>b.bat-a.bat)[0];
+  const topBowl=xi.slice().sort((a,b)=>b.bowl-a.bowl)[0];
+  if(r.wins===16){v="PERFECT. 16-0. 🏆";story=`Unbeaten champions. ${topBat.name} terrorised attacks, ${topBowl.name} closed every door. Immortal.`;}
+  else if(r.wins>=14){v="Champions! 🏆";story=`Lifted the trophy — but one slip kept you off the perfect run.`;}
+  else if(r.wins>=12){v="Finalists";story=`Fell at the very last hurdle. So close.`;}
+  else if(r.wins>=10){v="Playoffs";story=`Made the cut, ran out of steam in the knockouts.`;}
+  else if(r.wins>=7){v="Mid-table";story=`A few good nights, not enough of them.`;}
+  else {v="Wooden spoon";story=`The engine was unkind. Rebuild and go again.`;}
+  $("verdict").textContent=v;
+  $("story").textContent=story;
+
+  const set=(bar,pct,val)=>{$(bar).style.width=Math.round(val*100)+"%";$(pct).textContent=Math.round(val*100);};
+  set("batBar","batPct",r.bn);
+  set("bowlBar","bowlPct",r.bw);
+  set("balBar","balPct",r.balance);
+  set("strBar","strPct",Math.min(1,r.strength));
+
+  $("scTitle").textContent=`My all-time IPL XI went ${r.wins}-${r.losses}`;
+  $("scLine").textContent=`${v} · Captain: ${r.cap.name} · ${eraSet().size} eras · ${osCount()} overseas`;
+  $("scRoster").innerHTML=xi.map((p,i)=>`<div class="rchip ${p.id===captainId?'cap':''}">
+    <span class="r">${ROLE_LABEL[SLOTS[i]]}${p.id===captainId?' · C':''}</span>${p.name}</div>`).join("");
+
+  window._share=`My all-time IPL XI went ${r.wins}-${r.losses} on 16-0 🏏\n${v}\nCaptain: ${r.cap.name}\n\nCan your XI go 16-0?`;
+}
+
+function copyShare(){
+  const t=window._share||"";
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(()=>toast("Copied! Paste into WhatsApp")).catch(()=>toast("Copy failed"));
+  } else {
+    const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");toast("Copied! Paste into WhatsApp");}catch(e){toast("Copy failed");}
+    document.body.removeChild(ta);
+  }
+}
+</script>
+</body>
+</html>

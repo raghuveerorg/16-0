@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>16-0 — Can your all-time IPL XI go unbeaten?</title>
+<meta name="description" content="Draft an all-time IPL XI and see if it can run the table 16-0. Build your team, beat the engine, share your record." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">16-0<small>ALL-TIME IPL · UNBEATEN CHALLENGE</small></div>
+    <p class="tag" id="tag">Win all 14 league games, Qualifier 1 and the Final. Go 16-0.</p>
+  </header>
+
+  <!-- START / MODE PICK -->
+  <section id="start">
+    <div class="modes">
+      <div class="mode" onclick="APP.start('daily')">
+        <span class="badge" id="dailyBadge">DAILY</span>
+        <h3>Daily Challenge</h3>
+        <p id="dailyDesc">Everyone gets the <b>same</b> draft today — <b>one play per day</b>. See your rank against everyone who played.</p>
+      </div>
+      <div class="mode" onclick="APP.start('classic')">
+        <span class="badge">CLASSIC</span>
+        <h3>Free Play</h3>
+        <p>Fresh slot machine every game. Full stats shown. Draft and chase a perfect 16-0 as many times as you like.</p>
+      </div>
+      <div class="mode" onclick="APP.start('iq')">
+        <span class="badge">IQ MODE</span>
+        <h3>Cricket IQ</h3>
+        <p>No stats shown — just names and teams. Pick your 16-0 XI on pure cricket knowledge. The connoisseur's mode.</p>
+      </div>
+    </div>
+    <div class="slot" style="text-align:left">
+      <div class="role" style="font-size:17px;margin-bottom:8px">How it works</div>
+      <div style="color:var(--mut);font-size:13.5px">
+        ① Across 11 rounds a slot locks a <b style="color:var(--txt)">role</b> + a <b style="color:var(--acc2)">season</b> — and <b style="color:var(--txt)">every position is a different year</b>. Pick that player's best year for the job.<br>
+        ② Cards show that season's real stats and the team they played for. Hard rules: <b style="color:var(--txt)">max 4 overseas</b>; your XI auto-covers 20 overs; one keeper.<br>
+        ③ The same player can feature in different seasons. Name a captain.<br>
+        ④ The engine simulates 16 games — a perfect run needs batting <i>and</i> bowling firing together.
+      </div>
+    </div>
+  </section>
+
+  <!-- DRAFT -->
+  <section id="draft" class="hidden">
+    <div class="hud">
+      <div class="pill" id="modePill">Classic</div>
+      <div class="pill">Round <b id="rnum">1</b>/11</div>
+      <div class="pill" id="osPill">Overseas <b id="osCount">0</b>/4</div>
+      <div class="pill">Seasons <b id="seasonCount">0</b>/11</div>
+      <div class="pill">Skips <b id="skips">2</b></div>
+    </div>
+    <div class="slot">
+      <div class="rnd">Now drafting</div>
+      <div class="role" id="slotRole">Opener</div>
+      <div class="era" id="slotYear">Season: 2016</div>
+    </div>
+    <div class="center" style="margin:-4px 0 12px">
+      <button class="btn ghost sm" id="skipBtn" onclick="APP.skip()">↻ Re-roll season (×<span id="skipN">2</span>)</button>
+    </div>
+    <div class="grid" id="pool"></div>
+    <div class="roster" id="roster"></div>
+  </section>
+
+  <!-- CAPTAIN -->
+  <section id="captain" class="hidden">
+    <div class="slot"><div class="role" style="font-size:20px">Pick your captain 🧢</div>
+      <div style="color:var(--mut);font-size:13px;margin-top:6px">Tap a player. A great leader is worth a few clutch wins.</div></div>
+    <div class="roster" id="capRoster"></div>
+    <div class="center"><button class="btn" id="simBtn" disabled onclick="APP.simulate()">Simulate the season →</button></div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="hidden">
+    <div class="record" id="record">14-2</div>
+    <div class="verdict" id="verdict"></div>
+    <div class="story" id="story"></div>
+    <div id="rankPanel" class="rankpanel hidden"></div>
+    <div class="breakdown">
+      <div class="brow"><div class="lab"><span>Batting power</span><span id="batPct"></span></div><div class="bar"><i id="batBar" style="background:var(--bat)"></i></div></div>
+      <div class="brow"><div class="lab"><span>Bowling power</span><span id="bowlPct"></span></div><div class="bar"><i id="bowlBar" style="background:var(--bowl)"></i></div></div>
+      <div class="brow"><div class="lab"><span>Balance</span><span id="balPct"></span></div><div class="bar"><i id="balBar" style="background:var(--acc2)"></i></div></div>
+      <div class="brow"><div class="lab"><span>Overall strength</span><span id="strPct"></span></div><div class="bar"><i id="strBar" style="background:linear-gradient(90deg,var(--acc),var(--acc2))"></i></div></div>
+    </div>
+    <canvas id="shareCanvas" width="800" height="800"></canvas>
+    <div class="center">
+      <button class="btn sm" onclick="APP.downloadCard()">⬇ Save share card</button>
+      <button class="btn sm ghost" onclick="APP.copyText()">📋 Copy for WhatsApp</button>
+      <button class="btn sm ghost" onclick="APP.again()">↻ Play again</button>
+    </div>
+  </section>
+
+  <div class="footer">
+    Player ratings are computed from open ball-by-ball data (or illustrative seed values until the pipeline is run).<br>
+    16-0 is an independent concept and is <b>not affiliated with, endorsed by, or sponsored by the BCCI or the IPL</b>.
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="players.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
