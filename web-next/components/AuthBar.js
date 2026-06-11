@@ -36,6 +36,7 @@ export default function AuthBar() {
   if (user) {
     return (
       <div style={bar}>
+        <a href="/leaderboard" style={link}>Leaderboard</a>
         <a href="/profile" style={link}>My streak & history</a>
         <button className="btn ghost sm" onClick={signOut}>Sign out</button>
       </div>
@@ -44,6 +45,7 @@ export default function AuthBar() {
 
   return (
     <div style={bar}>
+      <a href="/leaderboard" style={link}>Leaderboard</a>
       <button className="btn sm" onClick={() => setOpen((o) => !o)}>Sign in</button>
       {open && (
         <div style={{ position: "absolute", top: 52, right: 16, width: 290, background: "#1b2240", border: "1px solid #2c3563", borderRadius: 14, padding: 16, zIndex: 50 }}>
