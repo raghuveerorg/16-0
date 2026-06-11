@@ -102,7 +102,7 @@
       return `<div class="pcard ${isBlocked ? "disabled" : ""}" ${isBlocked ? "" : `data-id="${p.id}"`}>
         <div class="nm">${p.name}</div>
         <div class="meta">
-          <span class="${p.os ? "os" : "ind"}">${p.os ? "OVERSEAS" : "INDIAN"}</span>
+          <span class="${p.os ? "os" : "ind"}">${p.os ? "OVERSEAS" : "DOMESTIC"}</span>
           <span class="teamtag">${team(p.team)}</span>
           ${isBlocked ? `<span style="color:var(--bad)">${reason}</span>` : ""}
         </div>
@@ -199,6 +199,7 @@
 
   function renderResult(r, replay) {
     show("result");
+    const sl = $("shareLinks"); if (sl) { sl.classList.add("hidden"); sl.innerHTML = ""; }
     $("record").textContent = `${r.wins}-${r.losses}`;
     $("record").style.color = r.wins === 16 ? "var(--gold)" : r.wins >= 14 ? "var(--good)" : r.wins <= 6 ? "var(--bad)" : "var(--txt)";
     const v = E.verdict(r.wins);
@@ -226,7 +227,7 @@
     set("batBar", "batPct", r.bn); set("bowlBar", "bowlPct", r.bw);
     set("balBar", "balPct", r.balance); set("strBar", "strPct", r.strength);
     drawCard(r, v);
-    S.shareText = `My all-time Indian T20 XI went ${r.wins}-${r.losses} on 16-0 🏏\n${v.title}\nCaptain: ${r.captain.name} (${r.captain.year})` +
+    S.shareText = `My all-time Club T20 XI went ${r.wins}-${r.losses} on 16-0 🏏\n${v.title}\nCaptain: ${r.captain.name} (${r.captain.year})` +
       (S.mode === "daily" ? `\nDaily ${S.seed}` + (r.rank ? ` · Top ${r.rank.pct < 1 ? "<1" : Math.round(r.rank.pct)}%` : "") : "") +
       (S.hideStats ? `\n🧠 Cricket IQ mode (no stats!)` : "") + `\n\nCan your XI go 16-0?`;
   }
@@ -255,7 +256,7 @@
     // header
     x.textAlign = "center";
     x.fillStyle = "#ffb020"; x.font = "900 60px -apple-system,Segoe UI,Roboto,sans-serif"; x.fillText("16-0", W / 2, 84);
-    x.fillStyle = "#9aa6cf"; x.font = "700 16px sans-serif"; x.fillText("ALL-TIME INDIAN T20 · UNBEATEN CHALLENGE", W / 2, 112);
+    x.fillStyle = "#9aa6cf"; x.font = "700 16px sans-serif"; x.fillText("ALL-TIME CLUB T20 · UNBEATEN CHALLENGE", W / 2, 112);
     x.fillStyle = r.wins === 16 ? "#ffcf45" : r.wins >= 14 ? "#3ddc84" : r.wins <= 6 ? "#ff5a5a" : "#eaf0ff";
     x.font = "900 132px sans-serif"; x.fillText(`${r.wins}-${r.losses}`, W / 2, 258);
     x.fillStyle = "#eaf0ff"; x.font = "800 30px sans-serif"; x.fillText(v.title, W / 2, 304);
@@ -282,6 +283,41 @@
     x.fillText("Unofficial fan project · not affiliated with any league or franchise · names used for identification only", W / 2, 788);
   }
 
+  function siteUrl() {
+    try { if (location && /^https?:/.test(location.origin)) return location.origin; } catch (e) {}
+    return "https://16-0.in";
+  }
+  // Native share sheet on mobile (can attach the result-card image); social links elsewhere.
+  async function share() {
+    const url = siteUrl(), text = S.shareText || "Can your all-time XI go 16-0?";
+    if (navigator.share) {
+      try {
+        const canvas = $("shareCanvas");
+        const blob = canvas && await new Promise((r) => canvas.toBlob(r, "image/png"));
+        const file = blob && new File([blob], `16-0_${S.result.wins}-${S.result.losses}.png`, { type: "image/png" });
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], text: text + "\n" + url, title: "16-0" });
+        } else {
+          await navigator.share({ title: "16-0", text, url });
+        }
+        return;
+      } catch (e) { if (e && e.name === "AbortError") return; } // cancelled → done; else fall through
+    }
+    showShareLinks(text, url);
+  }
+  function showShareLinks(text, url) {
+    const t = encodeURIComponent(text), u = encodeURIComponent(url), tu = encodeURIComponent(text + " " + url);
+    const links = [
+      ["𝕏", `https://twitter.com/intent/tweet?text=${t}&url=${u}`],
+      ["WhatsApp", `https://wa.me/?text=${tu}`],
+      ["Facebook", `https://www.facebook.com/sharer/sharer.php?u=${u}&quote=${t}`],
+      ["Telegram", `https://t.me/share/url?url=${u}&text=${t}`],
+    ];
+    const el = $("shareLinks");
+    el.innerHTML = links.map(([n, h]) => `<a class="btn sm ghost" href="${h}" target="_blank" rel="noopener noreferrer">${n}</a>`).join("");
+    el.classList.remove("hidden");
+  }
+
   function downloadCard() {
     const a = document.createElement("a");
     a.download = `16-0_${S.result.wins}-${S.result.losses}.png`;
@@ -299,7 +335,7 @@
   }
   function again() { show("start"); }
 
-  window.APP = { start, skip, simulate, downloadCard, copyText, again };
+  window.APP = { start, skip, simulate, share, downloadCard, copyText, again };
 
   // Reflect daily state on the start screen
   (function () {
