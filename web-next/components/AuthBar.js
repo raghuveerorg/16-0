@@ -22,7 +22,12 @@ export default function AuthBar() {
     const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } });
     setMsg(error ? error.message : "Check your email for the sign-in link.");
   };
-  const signOut = () => supabase.auth.signOut();
+  const signOut = async () => {
+    // Drop this browser's cached Daily so the next user doesn't inherit it.
+    try { localStorage.removeItem("16-0-daily-v1"); } catch {}
+    if (typeof window !== "undefined") window.__dailyStatus__ = null;
+    await supabase.auth.signOut();
+  };
 
   const bar = { display: "flex", justifyContent: "flex-end", gap: 8, alignItems: "center", padding: "10px 16px", maxWidth: 760, margin: "0 auto" };
   const link = { color: "#ffb020", textDecoration: "none", fontWeight: 700, fontSize: 14 };

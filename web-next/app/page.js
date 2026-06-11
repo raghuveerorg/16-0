@@ -16,17 +16,25 @@ export default function GamePage() {
     });
     (async () => {
       // Server is the source of truth for "already played today". Fetch it BEFORE the game boots so a
-      // signed-in user can't replay the Daily on a fresh browser / cleared local storage.
+      // signed-in user can't replay the Daily — and so a DIFFERENT user never inherits the previous
+      // user's cached result/streak from this browser's local storage.
+      const LS = "16-0-daily-v1";
       const status = await fetchDailyStatus().catch(() => null);
-      if (status && status.played) {
-        window.__dailyStatus__ = status;
-        try {
-          const today = new Date().toISOString().slice(0, 10);
-          localStorage.setItem("16-0-daily-v1", JSON.stringify({
-            date: today, wins: status.wins, losses: status.losses, rank: null,
-            xi: status.xi, captainId: status.captainId,
-          }));
-        } catch {}
+      if (status && status.authed) {
+        if (status.played) {
+          window.__dailyStatus__ = status;
+          try {
+            const today = new Date().toISOString().slice(0, 10);
+            localStorage.setItem(LS, JSON.stringify({
+              date: today, wins: status.wins, losses: status.losses, rank: null,
+              xi: status.xi, captainId: status.captainId,
+            }));
+          } catch {}
+        } else {
+          // Signed in but hasn't played today → wipe any stale cache left by another user.
+          window.__dailyStatus__ = null;
+          try { localStorage.removeItem(LS); } catch {}
+        }
       }
       await load("/game/players.js");
       await load("/game/engine.js");
