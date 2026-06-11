@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase/server";
+import HandleEditor from "@/components/HandleEditor";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,7 @@ export default async function Profile() {
 
   const { data: history } = await sb.rpc("rank_history", { p_user: user.id, p_limit: 60 });
   const { data: s } = await sb.rpc("user_streak", { p_user: user.id });
+  const { data: prof } = await sb.from("profiles").select("handle").eq("id", user.id).maybeSingle();
   const streak = s?.[0] ?? { current_streak: 0, longest_streak: 0 };
   const rows = history ?? [];
 
@@ -21,6 +23,7 @@ export default async function Profile() {
     <main style={wrap}>
       <Link href="/" style={{ color: "#ffb020", textDecoration: "none" }}>← Back to game</Link>
       <h1 style={{ marginBottom: 4 }}>Your record</h1>
+      <HandleEditor userId={user.id} handle={prof?.handle ?? null} />
       <p style={{ fontSize: 18 }}>🔥 Current streak: <b>{streak.current_streak}</b> &nbsp;·&nbsp; Longest: <b>{streak.longest_streak}</b> &nbsp;·&nbsp; {rows.length} dailies played</p>
 
       <h2 style={{ marginTop: 24 }}>Daily rank history</h2>

@@ -44,19 +44,29 @@ export default function AuthBar() {
   }
 
   return (
-    <div style={bar}>
+    <div style={{ ...bar, position: "relative" }}>
       <a href="/leaderboard" style={link}>Leaderboard</a>
-      <button className="btn sm" onClick={() => setOpen((o) => !o)}>Sign in</button>
+      <button className="btn sm" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="dialog">Sign in</button>
       {open && (
-        <div style={{ position: "absolute", top: 52, right: 16, width: 290, background: "#1b2240", border: "1px solid #2c3563", borderRadius: 14, padding: 16, zIndex: 50 }}>
-          <button className="btn sm" style={{ width: "100%", marginBottom: 12 }} onClick={() => oauth("google")}>Continue with Google</button>
+        <>
+          {/* click-away scrim */}
+          <div onClick={() => setOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 40, background: "rgba(5,8,20,.55)" }} />
+          <div role="dialog" aria-label="Sign in" style={{ position: "absolute", top: 52, right: 16, width: 300, background: "#1b2240", border: "1px solid #2c3563", borderRadius: 14, padding: 16, zIndex: 50, boxShadow: "0 18px 50px rgba(0,0,0,.5)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+              <div style={{ fontWeight: 800, fontSize: 15, color: "#eaf0ff" }}>Sign in to 16-0</div>
+              <button onClick={() => setOpen(false)} aria-label="Close sign-in"
+                style={{ background: "none", border: 0, color: "#9aa6cf", fontSize: 18, cursor: "pointer", padding: "2px 6px", lineHeight: 1 }}>✕</button>
+            </div>
+            <div style={{ color: "#9aa6cf", fontSize: 12, marginBottom: 12 }}>Save your daily streak, climb the leaderboards and pick your player name.</div>
+            <button className="btn sm" style={{ width: "100%", marginBottom: 12 }} onClick={() => oauth("google")}>Continue with Google</button>
 
-          <div style={{ color: "#9aa6cf", fontSize: 12, margin: "6px 0" }}>or email me a sign-in link</div>
-          <input style={input} type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <button className="btn sm" style={{ width: "100%" }} onClick={sendEmail}>Email me a magic link</button>
+            <div style={{ color: "#9aa6cf", fontSize: 12, margin: "6px 0" }}>or email me a sign-in link</div>
+            <input style={input} type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendEmail()} />
+            <button className="btn sm" style={{ width: "100%" }} onClick={sendEmail}>Email me a magic link</button>
 
-          {msg && <div style={{ color: "#9aa6cf", fontSize: 12, marginTop: 10 }}>{msg}</div>}
-        </div>
+            {msg && <div style={{ color: "#9aa6cf", fontSize: 12, marginTop: 10 }}>{msg}</div>}
+          </div>
+        </>
       )}
     </div>
   );

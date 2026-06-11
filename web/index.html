@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>16-0 — Can your all-time Club T20 XI go unbeaten?</title>
 <meta name="description" content="Draft an all-time Club T20 XI and see if it can run the table 16-0. Build your team, beat the engine, share your record." />
+<link rel="icon" href="favicon.ico" sizes="32x32" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -16,31 +17,41 @@
 
   <!-- START / MODE PICK -->
   <section id="start">
+    <div class="center hero">
+      <button class="btn big" type="button" onclick="APP.start('daily')">🏏 Start today's Daily Draft</button>
+      <button class="btn ghost" type="button" onclick="APP.start('classic')">Play Free — no sign-in</button>
+    </div>
     <div class="modes">
-      <div class="mode" onclick="APP.start('daily')">
+      <button class="mode" type="button" onclick="APP.start('daily')">
         <span class="badge" id="dailyBadge">DAILY</span>
         <h3>Daily Challenge</h3>
         <p id="dailyDesc">Everyone gets the <b>same</b> draft today — <b>one play per day</b>. See your rank against everyone who played.</p>
-      </div>
-      <div class="mode" onclick="APP.start('classic')">
+      </button>
+      <button class="mode" type="button" onclick="APP.start('classic')">
         <span class="badge">CLASSIC</span>
         <h3>Free Play</h3>
         <p>Fresh slot machine every game. Full stats shown. Draft and chase a perfect 16-0 as many times as you like.</p>
-      </div>
-      <div class="mode" onclick="APP.start('iq')">
+      </button>
+      <button class="mode" type="button" onclick="APP.start('iq')">
         <span class="badge">IQ MODE</span>
         <h3>Cricket IQ</h3>
         <p>No stats shown — just names and teams. Pick your 16-0 XI on pure cricket knowledge. The connoisseur's mode.</p>
-      </div>
+      </button>
     </div>
-    <div class="slot" style="text-align:left">
+    <div class="slot howto" style="text-align:left">
       <div class="role" style="font-size:17px;margin-bottom:8px">How it works</div>
       <div style="color:var(--mut);font-size:13.5px">
-        ① Across 11 rounds a slot locks a <b style="color:var(--txt)">role</b> + a <b style="color:var(--acc2)">season</b> — and <b style="color:var(--txt)">every position is a different year</b>. Pick that player's best year for the job.<br>
-        ② Cards show that season's real stats and the team they played for. Hard rules: <b style="color:var(--txt)">max 4 overseas</b>; your XI auto-covers 20 overs; one keeper.<br>
-        ③ The same player can feature in different seasons. Name a captain.<br>
-        ④ The engine simulates 16 games — a perfect run needs batting <i>and</i> bowling firing together.
+        Draft 11 players — each slot locks a <b style="color:var(--txt)">role</b> and a <b style="color:var(--acc2)">season</b>. Name a captain. The engine plays the 16-game season. Win them all.
       </div>
+      <details class="rules">
+        <summary>Full rules</summary>
+        <div style="color:var(--mut);font-size:13.5px">
+          ① Across 11 rounds a slot locks a <b style="color:var(--txt)">role</b> + a <b style="color:var(--acc2)">season</b> — and <b style="color:var(--txt)">every position is a different year</b>. Pick that player's best year for the job.<br>
+          ② Cards show that season's real stats and the team they played for. Hard rules: <b style="color:var(--txt)">max 4 overseas</b>; your XI auto-covers 20 overs; one keeper.<br>
+          ③ The same player can feature in different seasons. Name a captain.<br>
+          ④ The engine simulates 16 games — a perfect run needs batting <i>and</i> bowling firing together.
+        </div>
+      </details>
     </div>
   </section>
 

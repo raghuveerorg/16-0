@@ -99,7 +99,7 @@
       const reason = !isBlocked ? "" : (p.os && osCount() >= 4 && E.franchiseCount(S.xi, E.franchiseOf(p)) >= E.MAX_PER_FRANCHISE)
         ? "overseas + team full" : (p.os && osCount() >= 4) ? "overseas full" : "2 from this team";
       const stats = S.hideStats ? "" : E.statLine(p).map((l) => `<div class="statline">${l}</div>`).join("");
-      return `<div class="pcard ${isBlocked ? "disabled" : ""}" ${isBlocked ? "" : `data-id="${p.id}"`}>
+      return `<button type="button" class="pcard ${isBlocked ? "disabled" : ""}" ${isBlocked ? "disabled" : `data-id="${p.id}"`} aria-label="Pick ${p.name}${isBlocked ? " (unavailable: " + reason + ")" : ""}">
         <div class="nm">${p.name}</div>
         <div class="meta">
           <span class="${p.os ? "os" : "ind"}">${p.os ? "OVERSEAS" : "DOMESTIC"}</span>
@@ -107,7 +107,7 @@
           ${isBlocked ? `<span style="color:var(--bad)">${reason}</span>` : ""}
         </div>
         ${stats}
-      </div>`;
+      </button>`;
     }).join("");
     $("pool").querySelectorAll(".pcard[data-id]").forEach((el) => el.addEventListener("click", () => pick(+el.dataset.id)));
     renderRoster();
@@ -151,8 +151,8 @@
   function toCaptain() { show("captain"); renderCap(); }
   function renderCap() {
     $("capRoster").innerHTML = S.xi.map((p) =>
-      `<div class="rchip click ${S.captainId === p.id ? "cap" : ""}" data-id="${p.id}">
-        <span class="r">${S.captainId === p.id ? "CAPTAIN" : E.ROLE_LABEL[p.role]}</span>${p.name} · ${team(p.team)} ${p.year}</div>`).join("");
+      `<button type="button" class="rchip click ${S.captainId === p.id ? "cap" : ""}" data-id="${p.id}" aria-label="Make ${p.name} captain" aria-pressed="${S.captainId === p.id}">
+        <span class="r">${S.captainId === p.id ? "CAPTAIN" : E.ROLE_LABEL[p.role]}</span>${p.name} · ${team(p.team)} ${p.year}</button>`).join("");
     $("capRoster").querySelectorAll(".rchip[data-id]").forEach((el) =>
       el.addEventListener("click", () => { S.captainId = +el.dataset.id; renderCap(); $("simBtn").disabled = false; }));
   }
@@ -262,13 +262,22 @@
     const c = $("shareCanvas"), x = c.getContext("2d"), W = 800, H = 800;
     const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, "#1a2142"); g.addColorStop(1, "#0c1020");
     x.fillStyle = g; x.fillRect(0, 0, W, H);
+    // pitch stripes — subtle vertical mow bands like a floodlit outfield
+    for (let i = 0; i < 8; i++) { if (i % 2) { x.fillStyle = "rgba(255,255,255,.018)"; x.fillRect(i * 100, 0, 100, H); } }
+    // top accent strip (team-colour energy)
+    const strip = x.createLinearGradient(0, 0, W, 0); strip.addColorStop(0, "#ff5a36"); strip.addColorStop(1, "#ffb020");
+    x.fillStyle = strip; x.fillRect(0, 0, W, 8);
     // header
     x.textAlign = "center";
-    x.fillStyle = "#ffb020"; x.font = "900 60px -apple-system,Segoe UI,Roboto,sans-serif"; x.fillText("16-0", W / 2, 84);
-    x.fillStyle = "#9aa6cf"; x.font = "700 16px sans-serif"; x.fillText("ALL-TIME CLUB T20 · UNBEATEN CHALLENGE", W / 2, 112);
-    x.fillStyle = r.wins === 16 ? "#ffcf45" : r.wins >= 14 ? "#3ddc84" : r.wins <= 6 ? "#ff5a5a" : "#eaf0ff";
-    x.font = "900 132px sans-serif"; x.fillText(`${r.wins}-${r.losses}`, W / 2, 258);
-    x.fillStyle = "#eaf0ff"; x.font = "800 30px sans-serif"; x.fillText(v.title, W / 2, 304);
+    x.fillStyle = "#ffb020"; x.font = "900 60px -apple-system,Segoe UI,Roboto,sans-serif"; x.fillText("16-0", W / 2, 88);
+    x.fillStyle = "#9aa6cf"; x.font = "700 16px sans-serif"; x.fillText("ALL-TIME CLUB T20 · UNBEATEN CHALLENGE", W / 2, 116);
+    const recColor = r.wins === 16 ? "#ffcf45" : r.wins >= 14 ? "#3ddc84" : r.wins <= 6 ? "#ff5a5a" : "#eaf0ff";
+    x.save();
+    x.shadowColor = recColor; x.shadowBlur = r.wins >= 14 ? 42 : 18;
+    x.fillStyle = recColor; x.font = "900 132px sans-serif"; x.fillText(`${r.wins}-${r.losses}`, W / 2, 258);
+    x.restore();
+    const badge = r.wins === 16 ? "🏆 " : r.wins >= 14 ? "🔥 " : "";
+    x.fillStyle = "#eaf0ff"; x.font = "800 30px sans-serif"; x.fillText(badge + v.title, W / 2, 304);
     // divider
     const rule = (y) => { x.strokeStyle = "rgba(255,255,255,.10)"; x.lineWidth = 1; x.beginPath(); x.moveTo(56, y); x.lineTo(W - 56, y); x.stroke(); };
     rule(338);
@@ -287,9 +296,11 @@
     // footer
     rule(742);
     x.textAlign = "center"; x.fillStyle = "#9aa6cf"; x.font = "600 16px sans-serif";
-    x.fillText(`Captain: ${r.captain.name}   ·   ${r.seasons} seasons   ·   ${osCount()} overseas`, W / 2, 766);
-    x.fillStyle = "#67719c"; x.font = "500 11px sans-serif";
-    x.fillText("Unofficial fan project · not affiliated with any league or franchise · names used for identification only", W / 2, 788);
+    x.fillText(`Captain: ${r.captain.name}   ·   ${r.seasons} seasons   ·   ${osCount()} overseas`, W / 2, 764);
+    x.fillStyle = "#ffb020"; x.font = "800 13px sans-serif";
+    x.fillText("Can your XI go 16-0?  ·  16-0.in", W / 2, 781);
+    x.fillStyle = "#67719c"; x.font = "500 10px sans-serif";
+    x.fillText("Unofficial fan project · not affiliated with any league or franchise · names used for identification only", W / 2, 794);
   }
 
   function siteUrl() {

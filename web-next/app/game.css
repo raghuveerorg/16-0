@@ -24,13 +24,18 @@ header{text-align:center;padding:14px 0 4px}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line);box-shadow:none}
 .btn.sm{padding:9px 14px;font-size:13px;border-radius:10px}
+.btn.big{padding:16px 28px;font-size:18px;border-radius:14px}
 .center{text-align:center}
+.hero{margin:18px 0 4px}
+button:focus-visible,.btn:focus-visible,.mode:focus-visible,.pcard:focus-visible,.rchip:focus-visible{
+  outline:2px solid var(--acc2);outline-offset:2px}
 .hidden{display:none!important}
 a{color:var(--acc2)}
 
 .modes{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:18px 0}
 .mode{flex:1;min-width:220px;max-width:330px;text-align:left;background:linear-gradient(135deg,var(--card2),var(--card));
-  border:1px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;transition:border-color .12s,transform .08s}
+  border:1px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;transition:border-color .12s,transform .08s;
+  font:inherit;color:var(--txt);display:block}
 .mode:hover{border-color:var(--acc)}
 .mode:active{transform:translateY(1px)}
 .mode h3{margin:0 0 6px;font-size:18px}
@@ -52,7 +57,7 @@ a{color:var(--acc2)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:540px){.grid{grid-template-columns:1fr}.mode{min-width:100%}}
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;
-  transition:border-color .12s,transform .08s;position:relative}
+  transition:border-color .12s,transform .08s;position:relative;font:inherit;color:var(--txt);text-align:left;width:100%;display:block}
 .pcard:hover{border-color:var(--acc)}
 .pcard:active{transform:translateY(1px)}
 .pcard.disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.5)}
@@ -72,7 +77,8 @@ a{color:var(--acc2)}
 .hint{color:var(--mut);font-size:11px}
 
 .roster{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
-.rchip{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:5px 9px;font-size:11.5px}
+.rchip{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:5px 9px;font-size:11.5px;
+  font:inherit;font-size:11.5px;color:var(--txt);text-align:left}
 .rchip.empty{border-style:dashed;color:var(--mut)}
 .rchip.cap{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset;cursor:default}
 .rchip.click{cursor:pointer}
@@ -89,6 +95,13 @@ a{color:var(--acc2)}
 .brow{margin:9px 0}
 .brow .lab{font-size:12.5px;color:var(--txt);margin-bottom:3px}
 #shareCanvas{width:100%;max-width:420px;display:block;margin:14px auto;border-radius:14px;border:1px solid var(--line)}
+
+.rules{margin-top:10px}
+.rules summary{cursor:pointer;color:var(--acc2);font-size:13px;font-weight:700;list-style:none}
+.rules summary::-webkit-details-marker{display:none}
+.rules summary::before{content:"▸ ";transition:transform .12s}
+.rules[open] summary::before{content:"▾ "}
+.rules > div{margin-top:8px}
 
 .footer{color:var(--mut);font-size:11px;text-align:center;margin-top:26px;line-height:1.6}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000c;border:1px solid var(--line);
