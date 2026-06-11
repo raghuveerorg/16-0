@@ -1,0 +1,94 @@
+:root{
+  --bg:#0c1020; --card:#1b2240; --card2:#232c52; --line:#2c3563;
+  --txt:#eaf0ff; --mut:#9aa6cf; --acc:#ff5a36; --acc2:#ffb020;
+  --bat:#37c2ff; --bowl:#7cf07c; --good:#3ddc84; --bad:#ff5a5a; --gold:#ffcf45;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(1200px 600px at 50% -10%,#1a2240,transparent),var(--bg);
+  color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.45}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 70px}
+header{text-align:center;padding:14px 0 4px}
+.logo{font-weight:900;font-size:42px;letter-spacing:-1px;line-height:1;
+  background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo small{display:block;font-size:12.5px;font-weight:700;letter-spacing:1px;color:var(--mut);
+  -webkit-text-fill-color:var(--mut);margin-top:4px}
+.tag{color:var(--mut);font-size:14px;margin:6px 0 0}
+.btn{display:inline-block;border:0;cursor:pointer;font-weight:800;border-radius:12px;
+  padding:14px 22px;font-size:16px;color:#180a06;background:linear-gradient(90deg,var(--acc),var(--acc2));
+  box-shadow:0 6px 18px rgba(255,90,54,.3);transition:transform .08s;margin:4px}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line);box-shadow:none}
+.btn.sm{padding:9px 14px;font-size:13px;border-radius:10px}
+.center{text-align:center}
+.hidden{display:none!important}
+a{color:var(--acc2)}
+
+.modes{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.mode{flex:1;min-width:220px;max-width:330px;text-align:left;background:linear-gradient(135deg,var(--card2),var(--card));
+  border:1px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;transition:border-color .12s,transform .08s}
+.mode:hover{border-color:var(--acc)}
+.mode:active{transform:translateY(1px)}
+.mode h3{margin:0 0 6px;font-size:18px}
+.mode p{margin:0;color:var(--mut);font-size:13px}
+.mode .badge{display:inline-block;font-size:11px;font-weight:700;color:var(--acc2);border:1px dashed var(--acc2);
+  border-radius:999px;padding:2px 9px;margin-bottom:8px}
+
+.hud{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:12.5px;color:var(--mut)}
+.pill b{color:var(--txt)}
+.pill.warn b{color:var(--bad)}
+
+.slot{background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid var(--line);
+  border-radius:16px;padding:16px;text-align:center;margin:10px 0 14px}
+.slot .rnd{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:1.5px}
+.slot .role{font-size:24px;font-weight:900;letter-spacing:.3px}
+.slot .era{display:inline-block;margin-top:6px;font-size:12.5px;color:var(--acc2);border:1px dashed var(--acc2);border-radius:999px;padding:3px 10px}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:540px){.grid{grid-template-columns:1fr}.mode{min-width:100%}}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;
+  transition:border-color .12s,transform .08s;position:relative}
+.pcard:hover{border-color:var(--acc)}
+.pcard:active{transform:translateY(1px)}
+.pcard.disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.5)}
+.pcard.eramatch{box-shadow:0 0 0 1.5px var(--acc2) inset}
+.pcard .nm{font-weight:800;font-size:15px}
+.pcard .meta{font-size:11.5px;color:var(--mut);margin:2px 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.os{background:#3a2440;color:#ff9ad1;border:1px solid #5a3056;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:700}
+.ind{background:#1f3a2a;color:#9affc4;border:1px solid #2f5a40;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:700}
+.eratag{background:#23284a;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:10px;color:var(--acc2)}
+.teamtag{background:#23284a;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:10.5px;color:var(--acc2);font-weight:700;letter-spacing:.3px}
+.statline{font-size:13px;color:var(--txt);font-variant-numeric:tabular-nums;margin-top:6px;
+  background:#10152e;border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+.statline + .statline{margin-top:5px}
+.bar{height:7px;border-radius:6px;background:#0e1226;overflow:hidden;margin:4px 0}
+.bar > i{display:block;height:100%}
+.lab{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut)}
+.hint{color:var(--mut);font-size:11px}
+
+.roster{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
+.rchip{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:5px 9px;font-size:11.5px}
+.rchip.empty{border-style:dashed;color:var(--mut)}
+.rchip.cap{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset;cursor:default}
+.rchip.click{cursor:pointer}
+.rchip .r{color:var(--mut);font-size:9.5px;display:block;text-transform:uppercase;letter-spacing:.5px}
+
+.record{font-size:78px;font-weight:900;text-align:center;letter-spacing:-2px;line-height:1;margin:8px 0}
+.verdict{text-align:center;font-size:19px;font-weight:800;margin:4px 0 2px}
+.story{text-align:center;color:var(--mut);font-size:14px;margin:0 0 14px}
+.rankpanel{background:linear-gradient(135deg,#2a2150,#1a1f3e);border:1px solid var(--acc2);border-radius:14px;padding:14px;margin:12px 0;text-align:center}
+.rank-big{font-size:22px;font-weight:900;color:var(--gold)}
+.rank-sub{font-size:13px;color:var(--txt);margin-top:3px}
+.rank-note{font-size:11px;color:var(--mut);margin-top:5px}
+.breakdown{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+.brow{margin:9px 0}
+.brow .lab{font-size:12.5px;color:var(--txt);margin-bottom:3px}
+#shareCanvas{width:100%;max-width:420px;display:block;margin:14px auto;border-radius:14px;border:1px solid var(--line)}
+
+.footer{color:var(--mut);font-size:11px;text-align:center;margin-top:26px;line-height:1.6}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000c;border:1px solid var(--line);
+  padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.show{opacity:1}

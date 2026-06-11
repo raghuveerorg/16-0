@@ -1,6 +1,8 @@
-# 16-0 — Can your all-time IPL XI go unbeaten?
+# 16-0 — Can your all-time Indian T20 XI go unbeaten?
 
-Draft an all-time IPL XI and see if it can run the table **16-0** (14 league games + Qualifier 1 + Final). A cricket take on the viral basketball game [82-0.com](https://www.82-0.com).
+Draft an all-time Indian T20 XI and see if it can run the table **16-0** (14 league games + Qualifier 1 + Final). A cricket take on the viral basketball game [82-0.com](https://www.82-0.com).
+
+> **Unofficial fan project.** Not affiliated with, endorsed by, or sponsored by the BCCI, any T20 league, or any cricket franchise. League/team names and player names are the property of their respective owners and are used for identification and descriptive purposes only; statistics are derived from publicly available ball-by-ball data.
 
 This repo is a **working product**, not a mockup: a static web app (no build step) plus a Python data pipeline that generates verified player ratings from open ball-by-ball data.
 
@@ -8,7 +10,7 @@ This repo is a **working product**, not a mockup: a static web app (no build ste
 
 ## Quick start (play it now)
 
-The app is plain HTML/CSS/JS and ships with the **real dataset already built** — 1,094 player-seasons across all 19 IPL seasons (2008–2026), computed from Cricsheet. Runs with zero setup:
+The app is plain HTML/CSS/JS and ships with the **real dataset already built** — 1,094 player-seasons across all 19 seasons (2008–2026), computed from open Cricsheet ball-by-ball data. Runs with zero setup:
 
 ```bash
 # Option A — just open it
@@ -54,14 +56,14 @@ The seed `web/players.js` uses **illustrative** ratings so the app runs out of t
 ```bash
 cd data-pipeline
 
-# 1. Get open ball-by-ball IPL data (network must be open on your machine)
-curl -L -o ipl_json.zip https://cricsheet.org/downloads/ipl_json.zip
+# 1. Get open ball-by-ball Indian T20 data (network must be open on your machine)
+curl -L -o t20.zip https://cricsheet.org/downloads/ipl_json.zip
 
 # 2. Build the dataset (writes ../web/players.js + players.report.txt)
-python3 build_players.py --src ipl_json.zip --overseas overseas.csv --out ../web/players.js
+python3 build_players.py --src t20.zip --overseas overseas.csv --out ../web/players.js
 ```
 
-What it does: parses every IPL match across all seasons, infers each player's role from the data (keeper from stumpings, all-rounder from batting+bowling, batting order, spin/pace from over-phase), and emits **one representative per franchise, per role, per season** — so each role+year offers ~8–10 team-diverse options. Each card shows that season's real stat line; the 0–100 rating is hidden (peak years rate highest). Nationality (overseas) comes from `overseas.csv`; optional spin/pace corrections from `bowler_types.csv`. See `data-pipeline/README.md`.
+What it does: parses every Indian T20 match across all seasons, infers each player's role from the data (keeper from stumpings, all-rounder from batting+bowling, batting order, spin/pace from over-phase), and emits **one representative per franchise, per role, per season** — so each role+year offers ~8–10 team-diverse options. Each card shows that season's real stat line; the 0–100 rating is hidden (peak years rate highest). Nationality (overseas) comes from `overseas.csv`; optional spin/pace corrections from `bowler_types.csv`. See `data-pipeline/README.md`.
 
 `players.report.txt` lists players found in the data but missing from `metadata.csv` (with suggested roles) — add the ones you want, then re-run. **Spot-check a sample against ESPNcricinfo Statsguru before shipping.**
 
@@ -100,4 +102,4 @@ No server is required for v1. Share cards render client-side to PNG; the Daily l
 ## Notes
 
 - Ratings are computed by you from open data, so the output is your own — not a redistributed third-party feed. Still, verify before launch.
-- **16-0 is an independent concept and is not affiliated with, endorsed by, or sponsored by the BCCI or the IPL.** Avoid official logos/photography; get legal review before marketing. Keep the game free and prize-free to stay clear of India's real-money gaming regulations.
+- **16-0 is an independent, unofficial fan project — not affiliated with, endorsed by, or sponsored by the BCCI, any T20 league, or any cricket franchise.** League/team/player names are used for identification only and remain the property of their respective owners. The app uses **no official logos, crests, colour schemes, or photography** (keep it that way). Get IP legal review before any monetized/public launch, and keep the game free and prize-free to stay clear of India's real-money gaming regulations.

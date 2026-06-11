@@ -2,11 +2,18 @@
 node_modules/
 
 # raw source data (regenerate web/players.js with build_players.py) — players.js itself IS committed
-ipl_json.zip
+*.zip
 data-pipeline/sample/
 data-pipeline/*.report.txt
-data-pipeline/ipl_json.zip
 data-pipeline/ipl_json/
+
+# python
+__pycache__/
+*.pyc
+
+# next.js (web-next also has its own .gitignore)
+.next/
+.env*.local
 
 # os / editor
 .DS_Store

@@ -8,7 +8,7 @@ Companion to `16-0-game-design.md`. This covers the stack, data sourcing, archit
 
 - **Ship the loop first.** The whole game is *draft → simulate → share*. Get that delightful before adding modes.
 - **Static-first, cheap to run.** It's a client-heavy game with a small data layer. You don't need a big backend on day one.
-- **Data is the moat.** Anyone can clone the UI; a clean, era-adjusted, verified IPL stats database is the hard part. Invest there.
+- **Data is the moat.** Anyone can clone the UI; a clean, era-adjusted, verified Indian T20 stats database is the hard part. Invest there.
 - **Mobile-first, WhatsApp-native.** Most plays and shares will happen on a phone.
 
 ---
@@ -32,18 +32,18 @@ You could prototype the whole thing as a **single static HTML file** (as in `16-
 
 ## 3. Data sourcing — the most important section
 
-You need **per-player, per-season IPL stats** (batting + bowling) plus metadata (role, overseas flag, franchise, seasons active).
+You need **per-player, per-season Indian T20 stats** (batting + bowling) plus metadata (role, overseas flag, franchise, seasons active).
 
 ### Options, best to worst for an indie build
 
-1. **Cricsheet** (`cricsheet.org`) — *recommended foundation.* Free, open, **ball-by-ball** data for all IPL matches as YAML/JSON/CSV. You compute your own aggregates (runs, SR, wickets, economy, death-over economy, boundary %, era benchmarks). Because they're *your* computed facts from open data, this sidesteps feed-licensing concerns. **This is the right base.**
+1. **Cricsheet** (`cricsheet.org`) — *recommended foundation.* Free, open, **ball-by-ball** data for all Indian T20 matches as YAML/JSON/CSV. You compute your own aggregates (runs, SR, wickets, economy, death-over economy, boundary %, era benchmarks). Because they're *your* computed facts from open data, this sidesteps feed-licensing concerns. **This is the right base.**
 2. **ESPNcricinfo Statsguru** — gold standard for verification/spot-checks. Terms restrict scraping/redistribution, so use it to **validate** your Cricsheet-derived numbers, not as a live feed.
-3. **Official IPL / third-party stats APIs** — accurate but licensed and often costly; carries redistribution terms. Consider only at scale, with legal review.
+3. **Official Indian T20 / third-party stats APIs** — accurate but licensed and often costly; carries redistribution terms. Consider only at scale, with legal review.
 
 ### Recommended data pipeline
 
 ```
-Cricsheet ball-by-ball (all IPL seasons)
+Cricsheet ball-by-ball (all Indian T20 seasons)
         │  (offline ETL — Python/pandas)
         ▼
 Per player × per season aggregates
@@ -57,7 +57,7 @@ BattingPower / BowlingPower (0–100), role tags, overseas flag
 players.json  (bundled with the app; ~150 curated players for MVP)
 ```
 
-Run this ETL once, version the output, re-run after each new IPL season. **Spot-check a sample against Statsguru** before shipping (a verification step — see roadmap Phase 1).
+Run this ETL once, version the output, re-run after each new Indian T20 season. **Spot-check a sample against Statsguru** before shipping (a verification step — see roadmap Phase 1).
 
 ### Player metadata you must hand-curate or derive
 
@@ -118,13 +118,13 @@ Single-file proof of the core loop with representative data. Validates that the 
 
 ### Phase 3 — Depth & growth (ongoing)
 - Franchise Mode, Blitz mode.
-- Expand pool to full IPL history.
+- Expand pool to full Indian T20 history.
 - Accounts, profiles, all-time leaderboard.
-- Seasonal/sponsored events during live IPL.
+- Seasonal/sponsored events during live Indian T20.
 - Localization (Hindi + regional languages).
 
 ### Per-season maintenance
-- Re-run ETL after each IPL season; recompute era benchmarks (new era bucket as needed).
+- Re-run ETL after each Indian T20 season; recompute era benchmarks (new era bucket as needed).
 - Re-tune win curve if the meta shifts.
 - Add new players; refresh "current season" data.
 
@@ -140,4 +140,4 @@ Single-file proof of the core loop with representative data. Validates that the 
 
 ## 7. Reusability note
 
-The Cricsheet ETL + era-adjusted power-rating engine is reusable infrastructure. If this works for IPL, the *same* pipeline powers BBL, PSL, The Hundred, or an all-time international T20 version with only new data and benchmarks. Worth structuring the ETL to be league-agnostic from day one. (This is also a strong candidate for a reusable internal **Skill** if you build more cricket-data tools later.)
+The Cricsheet ETL + era-adjusted power-rating engine is reusable infrastructure. If this works for Indian T20, the *same* pipeline powers BBL, PSL, The Hundred, or an all-time international T20 version with only new data and benchmarks. Worth structuring the ETL to be league-agnostic from day one. (This is also a strong candidate for a reusable internal **Skill** if you build more cricket-data tools later.)

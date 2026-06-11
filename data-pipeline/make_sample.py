@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate synthetic Cricsheet-format IPL match JSON to test build_players.py offline.
+"""Generate synthetic Cricsheet-format Indian T20 match JSON to test build_players.py offline.
 NOT real data — just exercises the parser/aggregation path.
 Usage: python3 make_sample.py   ->  writes sample/*.json
 """

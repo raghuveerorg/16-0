@@ -1,6 +1,6 @@
 # 16-0 — Game Design Doc
 
-*Can your all-time IPL XI go through a whole tournament unbeaten?*
+*Can your all-time Indian T20 XI go through a whole tournament unbeaten?*
 
 > A cricket adaptation of the viral basketball game [82-0.com](https://www.82-0.com). This document defines the game's rules, scoring, simulation, modes, and growth loop. A companion **build plan** covers stack, data, and roadmap.
 
@@ -8,9 +8,9 @@
 
 ## 1. The hook
 
-**16-0 is the perfect IPL run.** A team that wins all 14 league games, then Qualifier 1, then the Final, finishes 16-0. It is statistically almost impossible — which is exactly why it makes a great target. The player's job: draft an all-time IPL XI good enough, and *balanced* enough, to run the table.
+**16-0 is the perfect Indian T20 run.** A team that wins all 14 league games, then Qualifier 1, then the Final, finishes 16-0. It is statistically almost impossible — which is exactly why it makes a great target. The player's job: draft an all-time Indian T20 XI good enough, and *balanced* enough, to run the table.
 
-The one-line pitch: **"Draft an all-time IPL XI and see if it can go 16-0. Build your team, beat the engine, share your record."**
+The one-line pitch: **"Draft an all-time Indian T20 XI and see if it can go 16-0. Build your team, beat the engine, share your record."**
 
 Why it can go viral with Indian cricket fans:
 
@@ -56,12 +56,12 @@ Cricket gives us **richer, more authentic constraints** than basketball. The max
 
 The unit of the game is the **player-season**, not the player. Every card is a specific player **in a specific year, for the franchise they played that year** — *Virat Kohli, RCB, 2016* is a different card from *Virat Kohli, RCB, 2024* — showing that season's real stats and carrying a hidden rating. A player's **peak season rates higher** than his off years, so the skill is knowing each player's best year.
 
-The pool spans **all 18+ IPL seasons (2008 onward), every franchise** including defunct ones (Deccan, Kochi, Pune Warriors, Gujarat Lions, Rising Pune). For each role in each year there is **one representative per franchise** — so a slot offers ~8–10 team-diverse options.
+The pool spans **all 18+ Indian T20 seasons (2008 onward), every franchise** including defunct ones (Deccan, Kochi, Pune Warriors, Gujarat Lions, Rising Pune). For each role in each year there is **one representative per franchise** — so a slot offers ~8–10 team-diverse options.
 
 ### 4a. Realistic XI rules (hard constraints — must be satisfied to simulate)
 
 - **11 players.**
-- **Max 4 overseas players** in the XI (real IPL rule).
+- **Max 4 overseas players** in the XI (real Indian T20 rule).
 - **Max 2 players from any one franchise** (renames count as one club: Delhi DD=DC, Punjab KXIP=PBKS, Bangalore RCB). No all-CSK XIs.
 - **Exactly 1 wicketkeeper.**
 - **At least 5 bowling options** covering **20 overs** (the XI shape guarantees this: 2 all-rounders + 1 spinner + 2 pacers).
@@ -166,7 +166,7 @@ A simulated record (e.g. **"14-2 — Knocked out in the Final"**), a short auto-
 4. **Leaderboard** — daily + all-time, filterable by favorite franchise.
 5. **Streaks** — play the daily N days in a row.
 
-Distribution priorities for India: **WhatsApp share first**, then Instagram Stories, then X. Franchise hashtags during IPL season.
+Distribution priorities for India: **WhatsApp share first**, then Instagram Stories, then X. Franchise hashtags during Indian T20 season.
 
 ---
 
@@ -175,7 +175,7 @@ Distribution priorities for India: **WhatsApp share first**, then Instagram Stor
 - **Sponsorship / brand integration** — the cleanest. 82-0 runs a sponsor banner; a cricket equivalent can partner with sports brands, fan platforms, or OTT.
 - **Cosmetic premium** — custom share-card themes, franchise skins, "captain badges."
 - **Affiliate** — links to merchandise or streaming, contextual to teams/players.
-- **Seasonal events** — sponsored daily challenges during live IPL.
+- **Seasonal events** — sponsored daily challenges during live Indian T20.
 
 **Avoid:** anything resembling real-money fantasy or betting. India's real-money gaming space is heavily regulated and contested (see Section 11). 16-0 should stay firmly in **"bragging rights"** territory — no entry fees, no cash prizes, no wagering.
 
@@ -183,7 +183,7 @@ Distribution priorities for India: **WhatsApp share first**, then Instagram Stor
 
 ## 11. Legal & data notes (important)
 
-- **Trademarks.** "IPL," team names, and logos are protected. Like 82-0's "not affiliated with the NBA" disclaimer, 16-0 must run a clear **"not affiliated with or endorsed by the BCCI/IPL"** notice, and should avoid official logos. Use original branding and either generic team references or licensed/again-disclaimed name use. Get legal review before launch.
+- **Trademarks.** "Indian T20," team names, and logos are protected. Like 82-0's "not affiliated with the NBA" disclaimer, 16-0 must run a clear **"not affiliated with or endorsed by the BCCI/Indian T20"** notice, and should avoid official logos. Use original branding and either generic team references or licensed/again-disclaimed name use. Get legal review before launch.
 - **Player name/likeness.** Using names and historical stats for commentary/games is generally lower-risk than using photos. Avoid official photography; consider illustrated/abstract avatars.
 - **Real-money gaming.** Keep the game free and prize-free to stay clear of state-level online-gaming and gambling regulations. Do not add anything that could be construed as betting.
 - **Data rights.** Match statistics are facts (not copyrightable as such), but *databases* and *official feeds* can carry licensing terms. Prefer open ball-by-ball data (Cricsheet) and compute your own aggregates — details in the build plan.
@@ -196,13 +196,13 @@ Distribution priorities for India: **WhatsApp share first**, then Instagram Stor
 - **Share rate:** shares per completed game (the viral coefficient driver).
 - **D1/D7 retention** on the Daily Challenge.
 - **K-factor:** invites/challenges sent × conversion.
-- Target north star: **daily active players during IPL season**.
+- Target north star: **daily active players during Indian T20 season**.
 
 ---
 
 ## 13. Open questions to resolve before build
 
-1. Player pool size for v1 — how many of the ~600 IPL players to include? (Recommend a curated **~150 most-relevant** for MVP, expand later.)
+1. Player pool size for v1 — how many of the ~600 Indian T20 players to include? (Recommend a curated **~150 most-relevant** for MVP, expand later.)
 2. Exact era-benchmark values — derive from real data (build plan).
 3. Tuning the win curve `k`/`threshold` so 16-0 is rare but believable.
 4. Branding/name: "16-0" is strong; confirm domain + trademark clearance.

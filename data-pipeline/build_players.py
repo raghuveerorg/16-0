@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-16-0 data pipeline  —  Cricsheet IPL ball-by-ball  ->  web/players.js
+16-0 data pipeline  —  Cricsheet Indian T20 ball-by-ball  ->  web/players.js
 ONE REPRESENTATIVE PER FRANCHISE, PER ROLE, PER SEASON.
 
 For every (team, season) it classifies the squad into the 7 roles and keeps each team's BEST player
@@ -15,7 +15,7 @@ Roles are inferred from the data:
 Nationality (overseas flag) isn't in the data either → merged from overseas.csv (unlisted = Indian).
 
 Usage:
-    python3 build_players.py --src ipl_json.zip --overseas overseas.csv --out ../web/players.js
+    python3 build_players.py --src t20.zip --overseas overseas.csv --out ../web/players.js
 Stdlib only. Stats are computed by us from open data; spot-check vs Statsguru before shipping.
 """
 import argparse, csv, json, os, sys, zipfile, glob, datetime
@@ -63,7 +63,7 @@ def load_matches(src):
                 with open(f) as fh: yield json.load(fh)
             except Exception as e: print(f"  ! skip {f}: {e}", file=sys.stderr)
 
-def match_year(info): return int(info["dates"][0][:4])  # IPL is played within one calendar year; season labels can be cross-year
+def match_year(info): return int(info["dates"][0][:4])  # Indian T20 is played within one calendar year; season labels can be cross-year
 
 def process(src):
     bat = defaultdict(lambda: defaultdict(blank_bat))

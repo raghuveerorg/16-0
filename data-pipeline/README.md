@@ -1,6 +1,6 @@
 # 16-0 data pipeline
 
-Turns open IPL ball-by-ball data into the game's player dataset: **one representative per franchise, per role, per season** (so each role+year offers ~8–10 team-diverse options).
+Turns open Indian T20 ball-by-ball data into the game's player dataset: **one representative per franchise, per role, per season** (so each role+year offers ~8–10 team-diverse options).
 
 ## Files
 - `build_players.py` — the ETL. Stdlib only. Cricsheet → `../web/players.js` + `players.report.txt`.
@@ -11,8 +11,8 @@ Turns open IPL ball-by-ball data into the game's player dataset: **one represent
 ## Run
 ```bash
 # place the open ball-by-ball data in this folder (network is open on your machine):
-curl -L -o ipl_json.zip https://cricsheet.org/downloads/ipl_json.zip
-python3 build_players.py --src ipl_json.zip --overseas overseas.csv --out ../web/players.js
+curl -L -o t20.zip https://cricsheet.org/downloads/ipl_json.zip
+python3 build_players.py --src t20.zip --overseas overseas.csv --out ../web/players.js
 ```
 
 ## How roles are inferred (from the data)

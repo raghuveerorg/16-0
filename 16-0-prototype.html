@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>16-0 — Can your all-time IPL XI go unbeaten?</title>
+<title>16-0 — Can your all-time Indian T20 XI go unbeaten?</title>
 <style>
   :root{
     --bg:#0c1020; --bg2:#141a30; --card:#1b2240; --card2:#232c52;
@@ -90,7 +90,7 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="logo">16-0<small>ALL-TIME IPL · UNBEATEN CHALLENGE</small></div>
+    <div class="logo">16-0<small>ALL-TIME Indian T20 · UNBEATEN CHALLENGE</small></div>
     <p class="tag" id="tag">Draft an all-time XI. Win all 14 league games, Qualifier 1 and the Final. Go 16-0.</p>
   </header>
 
@@ -158,7 +158,7 @@
     </div>
 
     <div class="sharecard" id="shareCard">
-      <h3 id="scTitle">My all-time IPL XI went 14-2</h3>
+      <h3 id="scTitle">My all-time Indian T20 XI went 14-2</h3>
       <div style="color:var(--mut);font-size:12.5px" id="scLine"></div>
       <div class="roster" id="scRoster" style="margin-top:10px"></div>
     </div>
@@ -171,7 +171,7 @@
 
   <div class="footer">
     Prototype. Player ratings are <b>illustrative approximations</b> for demo purposes, not verified stats.<br>
-    16-0 is an independent concept and is <b>not affiliated with, endorsed by, or sponsored by the BCCI or the IPL</b>.
+    16-0 is an independent concept and is <b>not affiliated with, endorsed by, or sponsored by the BCCI or the Indian T20</b>.
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -375,12 +375,12 @@ function renderResult(r){
   set("balBar","balPct",r.balance);
   set("strBar","strPct",Math.min(1,r.strength));
 
-  $("scTitle").textContent=`My all-time IPL XI went ${r.wins}-${r.losses}`;
+  $("scTitle").textContent=`My all-time Indian T20 XI went ${r.wins}-${r.losses}`;
   $("scLine").textContent=`${v} · Captain: ${r.cap.name} · ${eraSet().size} eras · ${osCount()} overseas`;
   $("scRoster").innerHTML=xi.map((p,i)=>`<div class="rchip ${p.id===captainId?'cap':''}">
     <span class="r">${ROLE_LABEL[SLOTS[i]]}${p.id===captainId?' · C':''}</span>${p.name}</div>`).join("");
 
-  window._share=`My all-time IPL XI went ${r.wins}-${r.losses} on 16-0 🏏\n${v}\nCaptain: ${r.cap.name}\n\nCan your XI go 16-0?`;
+  window._share=`My all-time Indian T20 XI went ${r.wins}-${r.losses} on 16-0 🏏\n${v}\nCaptain: ${r.cap.name}\n\nCan your XI go 16-0?`;
 }
 
 function copyShare(){
