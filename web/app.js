@@ -31,9 +31,25 @@
     $("modePill").textContent = "Daily · " + S.seed + " · ✓ played";
     renderResult(S.result, true);
   }
+  // Replay today's Daily from the server record (so it shows even on a new device / cleared storage).
+  function replayServer(srv) {
+    S.mode = "daily"; S.hideStats = false; S.seed = E.dailyKey();
+    S.xi = srv.xi.map((id) => P.find((p) => p.id === id)); S.captainId = srv.captainId;
+    S.result = E.simulateSeason(S.xi, S.captainId);
+    $("modePill").textContent = "Daily · " + S.seed + " · ✓ played";
+    renderResult(S.result, true);
+    $("rankPanel").classList.remove("hidden");
+    applyServerRank(srv);
+  }
 
   function start(mode) {
-    if (mode === "daily") { const done = loadDaily(); if (done) return replayDaily(done); }
+    if (mode === "daily") {
+      // Server is authoritative for "already played today" (set by the Next wrapper). Falls back to
+      // local storage for the static build / signed-out players.
+      const srv = window.__dailyStatus__;
+      if (srv && srv.played && srv.xi && srv.xi.every((id) => P.some((p) => p.id === id))) return replayServer(srv);
+      const done = loadDaily(); if (done) return replayDaily(done);
+    }
     S.mode = mode;
     S.hideStats = mode === "iq";
     S.seed = mode === "daily" ? E.dailyKey() : null;

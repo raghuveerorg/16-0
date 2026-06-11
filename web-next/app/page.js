@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { GAME_BODY } from "@/lib/gameHtml";
-import { submitDaily } from "@/lib/submit";
+import { submitDaily, fetchDailyStatus } from "@/lib/submit";
 
 // Mounts the proven vanilla game (engine/players/app) and wires the Daily-result hook to the backend.
 export default function GamePage() {
@@ -15,6 +15,19 @@ export default function GamePage() {
       s.src = src; s.onload = res; s.onerror = res; document.body.appendChild(s);
     });
     (async () => {
+      // Server is the source of truth for "already played today". Fetch it BEFORE the game boots so a
+      // signed-in user can't replay the Daily on a fresh browser / cleared local storage.
+      const status = await fetchDailyStatus().catch(() => null);
+      if (status && status.played) {
+        window.__dailyStatus__ = status;
+        try {
+          const today = new Date().toISOString().slice(0, 10);
+          localStorage.setItem("16-0-daily-v1", JSON.stringify({
+            date: today, wins: status.wins, losses: status.losses, rank: null,
+            xi: status.xi, captainId: status.captainId,
+          }));
+        } catch {}
+      }
       await load("/game/players.js");
       await load("/game/engine.js");
       await load("/game/app.js");

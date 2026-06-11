@@ -27,11 +27,18 @@ export async function POST(req) {
     user_id: user.id, day, wins: v.wins, losses: v.losses, xi: body.xi, captain_id: body.captainId,
   });
   // unique(user_id, day) → second attempt the same day is a no-op (one play per day, enforced by the DB)
-  if (error && !String(error.message).toLowerCase().includes("duplicate")) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+  const dup = error && String(error.message).toLowerCase().includes("duplicate");
+  if (error && !dup) return NextResponse.json({ error: error.message }, { status: 400 });
+
+  // On a duplicate, the FIRST play stands — report its stored score, not this new attempt.
+  let wins = v.wins, losses = v.losses;
+  if (dup) {
+    const { data: existing } = await admin.from("daily_results")
+      .select("wins,losses").eq("user_id", user.id).eq("day", day).maybeSingle();
+    if (existing) { wins = existing.wins; losses = existing.losses; }
   }
 
   const { data: rank } = await admin.rpc("day_rank", { p_user: user.id, p_day: day });
   const { data: streak } = await admin.rpc("user_streak", { p_user: user.id });
-  return NextResponse.json({ wins: v.wins, losses: v.losses, rank: rank?.[0] ?? null, streak: streak?.[0] ?? null });
+  return NextResponse.json({ wins, losses, rank: rank?.[0] ?? null, streak: streak?.[0] ?? null });
 }
