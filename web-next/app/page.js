@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { GAME_BODY } from "@/lib/gameHtml";
-import { submitDaily, fetchDailyStatus } from "@/lib/submit";
+import { submitDaily, submitFreeplay, fetchDailyStatus } from "@/lib/submit";
 
 // Mounts the proven vanilla game (engine/players/app) and wires the Daily-result hook to the backend.
 export default function GamePage() {
@@ -10,6 +10,7 @@ export default function GamePage() {
     if (started.current) return;
     started.current = true;
     window.__onDailyResult__ = (p) => submitDaily(p).catch(() => null);
+    window.__onGameResult__ = (p) => submitFreeplay(p).catch(() => null);
     const load = (src) => new Promise((res) => {
       const s = document.createElement("script");
       s.src = src; s.onload = res; s.onerror = res; document.body.appendChild(s);

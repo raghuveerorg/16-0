@@ -2,7 +2,7 @@
 const assert = require("assert");
 const ENGINE = require("./engine.js");
 const PLAYERS = require("./players.js").players;
-const { validateSubmission } = require("./validate.js");
+const { validateSubmission, validateFreeplay } = require("./validate.js");
 const { computeStreak } = require("./streak.js");
 
 let pass = 0, fail = 0;
@@ -63,6 +63,40 @@ t("rejects duplicates, wrong length, unknown id, bad day", () => {
 t("rejects captain not in the XI", () => {
   const sub = legit("2026-06-11"); sub.captainId = -1;
   assert.strictEqual(validateSubmission(sub).ok, false);
+});
+
+// Build a legit free-play XI: correct role per slot, 11 distinct players, 11 distinct seasons, caps ok.
+function legitFree(mode) {
+  const usedNames = new Set(), usedYears = new Set(), xi = [], objs = [];
+  for (let i = 0; i < 11; i++) {
+    const role = ENGINE.SLOTS[i];
+    const pool = PLAYERS.filter((p) => p.role === role && !usedNames.has(p.name) && !usedYears.has(p.year) && !ENGINE.blocked(objs, p))
+      .sort((a, b) => (b.bat + b.bowl) - (a.bat + a.bowl));
+    const p = pool[0];
+    xi.push(p.id); objs.push(p); usedNames.add(p.name); usedYears.add(p.year);
+  }
+  return { mode, xi, captainId: xi[5] };
+}
+
+console.log("Free play");
+t("accepts a legit free-play game and computes points = wins + strength/100", () => {
+  const sub = legitFree("classic");
+  const r = validateFreeplay(sub);
+  assert.ok(r.ok, r.error);
+  const picked = sub.xi.map((id) => PLAYERS.find((p) => p.id === id));
+  const strength = picked.reduce((a, p) => a + p.bat + p.bowl, 0);
+  assert.strictEqual(r.strength, strength);
+  assert.strictEqual(r.points, Math.round((r.wins + strength / 100) * 100) / 100);
+  assert.strictEqual(r.wins, ENGINE.simulateSeason(picked, sub.captainId).wins);
+});
+t("rejects an unknown mode, dup player, dup season, bad captain", () => {
+  const base = legitFree("iq");
+  assert.strictEqual(validateFreeplay({ ...base, mode: "daily" }).ok, false);
+  assert.strictEqual(validateFreeplay({ ...base, captainId: -1 }).ok, false);
+  // make two slots share a season → reject
+  const picked = base.xi.map((id) => PLAYERS.find((p) => p.id === id));
+  const clash = PLAYERS.find((p) => p.role === ENGINE.SLOTS[1] && p.year === picked[0].year && !base.xi.includes(p.id));
+  if (clash) assert.strictEqual(validateFreeplay({ ...base, xi: base.xi.map((id, i) => (i === 1 ? clash.id : id)) }).ok, false);
 });
 
 console.log("Streak");

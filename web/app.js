@@ -193,6 +193,15 @@
           .then((srv) => { if (srv) applyServerRank(srv); })
           .catch(() => {});
       }
+    } else if (window.__onGameResult__) {
+      // Classic / IQ → record to the free-play leaderboard (wins + team-strength points).
+      Promise.resolve()
+        .then(() => window.__onGameResult__({ mode: S.mode, xi: S.xi.map((p) => p.id), captainId: S.captainId }))
+        .then((res) => {
+          if (res && res.needsAuth) toast("Sign in to climb the leaderboard");
+          else if (res && res.saved) toast("Added to the " + (S.mode === "iq" ? "Cricket IQ" : "Classic") + " leaderboard");
+        })
+        .catch(() => {});
     }
     renderResult(S.result);
   }
