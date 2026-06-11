@@ -7,10 +7,6 @@ export default function AuthBar() {
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [stage, setStage] = useState("");   // "", "email-sent", "otp"
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
@@ -22,20 +18,9 @@ export default function AuthBar() {
   const redirectTo = typeof window !== "undefined" ? window.location.origin + "/auth/callback" : undefined;
   const oauth = (provider) => supabase.auth.signInWithOAuth({ provider, options: { redirectTo } });
   const sendEmail = async () => {
+    if (!email) return setMsg("Enter your email first.");
     const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } });
-    setMsg(error ? error.message : "Check your email for the sign-in link."); if (!error) setStage("email-sent");
-  };
-  const sendPhone = async () => {
-    const { error } = await supabase.auth.signInWithOtp({ phone });
-    setMsg(error ? error.message : "Code sent."); if (!error) setStage("otp");
-  };
-  const verifyPhone = async () => {
-    const { error } = await supabase.auth.verifyOtp({ phone, token: otp, type: "sms" });
-    if (error) setMsg(error.message);
-  };
-  const passwordSignIn = async () => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setMsg(error.message);
+    setMsg(error ? error.message : "Check your email for the sign-in link.");
   };
   const signOut = () => supabase.auth.signOut();
 
@@ -60,24 +45,10 @@ export default function AuthBar() {
           <button className="btn sm" style={{ width: "100%", marginBottom: 8 }} onClick={() => oauth("google")}>Continue with Google</button>
           <button className="btn sm ghost" style={{ width: "100%", marginBottom: 12 }} onClick={() => oauth("apple")}>Continue with Apple</button>
 
-          <div style={{ color: "#9aa6cf", fontSize: 12, margin: "6px 0" }}>or email</div>
+          <div style={{ color: "#9aa6cf", fontSize: 12, margin: "6px 0" }}>or email me a sign-in link</div>
           <input style={input} type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input style={input} type="password" placeholder="password (for password sign-in)" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button className="btn sm" style={{ width: "100%", marginBottom: 6 }} onClick={passwordSignIn}>Sign in with password</button>
-          <button className="btn sm ghost" style={{ width: "100%" }} onClick={sendEmail}>Or email me a magic link</button>
+          <button className="btn sm" style={{ width: "100%" }} onClick={sendEmail}>Email me a magic link</button>
 
-          <div style={{ color: "#9aa6cf", fontSize: 12, margin: "12px 0 4px" }}>or phone (OTP)</div>
-          {stage !== "otp" ? (
-            <>
-              <input style={input} type="tel" placeholder="+91XXXXXXXXXX" value={phone} onChange={(e) => setPhone(e.target.value)} />
-              <button className="btn sm ghost" style={{ width: "100%" }} onClick={sendPhone}>Send code</button>
-            </>
-          ) : (
-            <>
-              <input style={input} inputMode="numeric" placeholder="6-digit code" value={otp} onChange={(e) => setOtp(e.target.value)} />
-              <button className="btn sm" style={{ width: "100%" }} onClick={verifyPhone}>Verify & sign in</button>
-            </>
-          )}
           {msg && <div style={{ color: "#9aa6cf", fontSize: 12, marginTop: 10 }}>{msg}</div>}
         </div>
       )}
