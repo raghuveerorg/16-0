@@ -8,15 +8,16 @@ const { computeStreak } = require("./streak.js");
 let pass = 0, fail = 0;
 const t = (n, fn) => { try { fn(); console.log("  ✓ " + n); pass++; } catch (e) { console.log("  ✗ " + n + " — " + e.message); fail++; } };
 
-// Build a legit submission for a given day: the day's deal, best card per slot, distinct.
+// Build a legit submission for a given day: the day's deal, best card per slot, with no player
+// repeated (even across seasons) — mirrors the game's one-human-per-XI rule.
 function legit(day) {
   const years = ENGINE.assignedYearSequence(day, ENGINE.feasibleYears(PLAYERS));
-  const used = new Set(), xi = [];
+  const usedNames = new Set(), xi = [];
   for (let i = 0; i < 11; i++) {
     const role = ENGINE.SLOTS[i];
-    const pool = PLAYERS.filter((p) => p.role === role && p.year === years[i] && !used.has(p.id))
+    const pool = PLAYERS.filter((p) => p.role === role && p.year === years[i] && !usedNames.has(p.name))
       .sort((a, b) => (b.bat + b.bowl) - (a.bat + a.bowl));
-    xi.push(pool[0].id); used.add(pool[0].id);
+    xi.push(pool[0].id); usedNames.add(pool[0].name);
   }
   return { day, xi, captainId: xi[5] };
 }

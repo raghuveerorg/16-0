@@ -729,7 +729,7 @@
   {
    "id": 43,
    "name": "MF Maharoof",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2008,
    "team": "DD",
@@ -774,7 +774,7 @@
   {
    "id": 46,
    "name": "L Balaji",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2008,
    "team": "CSK",
@@ -789,7 +789,7 @@
   {
    "id": 47,
    "name": "SC Ganguly",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2008,
    "team": "KKR",
@@ -1614,7 +1614,7 @@
   {
    "id": 98,
    "name": "R Bhatia",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2009,
    "team": "DD",
@@ -2532,7 +2532,7 @@
   {
    "id": 155,
    "name": "SK Trivedi",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2010,
    "team": "RR",
@@ -3393,7 +3393,7 @@
   {
    "id": 208,
    "name": "R Ashwin",
-   "role": "PACE",
+   "role": "SPIN",
    "os": false,
    "year": 2011,
    "team": "CSK",
@@ -3408,7 +3408,7 @@
   {
    "id": 209,
    "name": "Iqbal Abdulla",
-   "role": "PACE",
+   "role": "SPIN",
    "os": false,
    "year": 2011,
    "team": "KKR",
@@ -3621,7 +3621,7 @@
   {
    "id": 223,
    "name": "KA Pollard",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2011,
    "team": "MI",
@@ -3657,7 +3657,7 @@
   {
    "id": 225,
    "name": "AB Agarkar",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2011,
    "team": "DD",
@@ -4356,7 +4356,7 @@
   {
    "id": 269,
    "name": "SP Narine",
-   "role": "PACE",
+   "role": "SPIN",
    "os": true,
    "year": 2012,
    "team": "KKR",
@@ -4506,7 +4506,7 @@
   {
    "id": 279,
    "name": "KA Pollard",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2012,
    "team": "MI",
@@ -4539,7 +4539,7 @@
   {
    "id": 281,
    "name": "DJ Bravo",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2012,
    "team": "CSK",
@@ -4557,7 +4557,7 @@
   {
    "id": 282,
    "name": "SK Trivedi",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2012,
    "team": "RR",
@@ -4572,7 +4572,7 @@
   {
    "id": 283,
    "name": "R Bhatia",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2012,
    "team": "KKR",
@@ -4617,7 +4617,7 @@
   {
    "id": 286,
    "name": "AD Mathews",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2012,
    "team": "PWI",
@@ -5367,7 +5367,7 @@
   {
    "id": 333,
    "name": "SP Narine",
-   "role": "PACE",
+   "role": "SPIN",
    "os": true,
    "year": 2013,
    "team": "KKR",
@@ -5520,7 +5520,7 @@
   {
    "id": 343,
    "name": "JH Kallis",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2013,
    "team": "KKR",
@@ -5538,7 +5538,7 @@
   {
    "id": 344,
    "name": "P Awana",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2013,
    "team": "KXIP",
@@ -5553,7 +5553,7 @@
   {
    "id": 345,
    "name": "JD Unadkat",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2013,
    "team": "RCB",
@@ -5568,7 +5568,7 @@
   {
    "id": 346,
    "name": "SK Trivedi",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2013,
    "team": "RR",
@@ -6207,7 +6207,7 @@
   {
    "id": 386,
    "name": "SP Narine",
-   "role": "PACE",
+   "role": "SPIN",
    "os": true,
    "year": 2014,
    "team": "KKR",
@@ -7191,7 +7191,7 @@
   {
    "id": 449,
    "name": "MC Henriques",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2015,
    "team": "SRH",
@@ -8037,7 +8037,7 @@
   {
    "id": 503,
    "name": "MC Henriques",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2016,
    "team": "SRH",
@@ -8781,7 +8781,7 @@
   {
    "id": 550,
    "name": "S Badree",
-   "role": "PACE",
+   "role": "SPIN",
    "os": false,
    "year": 2017,
    "team": "RCB",
@@ -9594,7 +9594,7 @@
   {
    "id": 602,
    "name": "SP Narine",
-   "role": "PACE",
+   "role": "SPIN",
    "os": true,
    "year": 2018,
    "team": "KKR",
@@ -11265,7 +11265,7 @@
   {
    "id": 709,
    "name": "DJ Bravo",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2020,
    "team": "CSK",
@@ -13062,7 +13062,7 @@
   {
    "id": 823,
    "name": "Umran Malik",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2022,
    "team": "SRH",
@@ -13932,7 +13932,7 @@
   {
    "id": 878,
    "name": "CV Varun",
-   "role": "PACE",
+   "role": "SPIN",
    "os": false,
    "year": 2023,
    "team": "KKR",
@@ -14115,7 +14115,7 @@
   {
    "id": 890,
    "name": "MR Marsh",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2023,
    "team": "DC",
@@ -14160,7 +14160,7 @@
   {
    "id": 893,
    "name": "HV Patel",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2023,
    "team": "RCB",
@@ -15075,7 +15075,7 @@
   {
    "id": 952,
    "name": "AD Russell",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2024,
    "team": "KKR",
@@ -15093,7 +15093,7 @@
   {
    "id": 953,
    "name": "M Pathirana",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2024,
    "team": "CSK",
@@ -15168,7 +15168,7 @@
   {
    "id": 958,
    "name": "C Green",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2024,
    "team": "RCB",
@@ -16203,7 +16203,7 @@
   {
    "id": 1025,
    "name": "HH Pandya",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2025,
    "team": "MI",
@@ -17127,7 +17127,7 @@
   {
    "id": 1085,
    "name": "JO Holder",
-   "role": "SPIN",
+   "role": "PACE",
    "os": true,
    "year": 2026,
    "team": "GT",
@@ -17142,7 +17142,7 @@
   {
    "id": 1086,
    "name": "J Overton",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2026,
    "team": "CSK",
@@ -17157,7 +17157,7 @@
   {
    "id": 1087,
    "name": "C Bosch",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2026,
    "team": "MI",
@@ -17253,7 +17253,7 @@
   {
    "id": 1093,
    "name": "Avesh Khan",
-   "role": "SPIN",
+   "role": "PACE",
    "os": false,
    "year": 2026,
    "team": "LSG",

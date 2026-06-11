@@ -71,6 +71,8 @@
     if (player.role !== SLOTS[idx]) return { ok: false, reason: "wrong role" };
     if (assignedYear != null && player.year !== assignedYear) return { ok: false, reason: "wrong year" };
     if (usedIds && usedIds.has(player.id)) return { ok: false, reason: "already in your XI" };
+    // One human per XI — the same player can't appear twice, even from a different season.
+    if (xi.some((q) => q && q.name === player.name)) return { ok: false, reason: "already picked (another season)" };
     if (player.os && overseasCount(xi) >= MAX_OVERSEAS) return { ok: false, reason: "max 4 overseas" };
     if (franchiseCount(xi, franchiseOf(player)) >= MAX_PER_FRANCHISE) return { ok: false, reason: "max 2 from a franchise" };
     return { ok: true };
@@ -79,10 +81,15 @@
   function blocked(xi, player) {
     return (player.os && overseasCount(xi) >= MAX_OVERSEAS) || franchiseCount(xi, franchiseOf(player)) >= MAX_PER_FRANCHISE;
   }
-  // Candidates for a round (role + assigned year), respecting used cards.
-  function candidates(players, idx, assignedYear, xi, usedIds) {
+  // Candidates for a round (role + assigned year), respecting used cards AND already-picked players
+  // (a player drafted in an earlier season is hidden everywhere). allowDup relaxes the name filter
+  // only for the rare Daily corner where a slot would otherwise have no legal option.
+  function candidates(players, idx, assignedYear, xi, usedIds, allowDup) {
     const role = SLOTS[idx];
-    return players.filter((p) => p.role === role && p.year === assignedYear && !(usedIds && usedIds.has(p.id)));
+    const usedNames = allowDup ? null : new Set((xi || []).filter(Boolean).map((q) => q.name));
+    return players.filter((p) => p.role === role && p.year === assignedYear
+      && !(usedIds && usedIds.has(p.id))
+      && !(usedNames && usedNames.has(p.name)));
   }
   // Is there any pickable (non-blocked) candidate? Used by the app's auto-reroll safeguard.
   function hasPickable(players, idx, assignedYear, xi, usedIds) {
@@ -95,6 +102,8 @@
     if (overseasCount(xi) > MAX_OVERSEAS) errs.push("too many overseas");
     if (xi[5] && xi[5].role !== "KEEPER") errs.push("no keeper");
     if (BOWLER_SLOTS.some((i) => !xi[i])) errs.push("bowling not covered");
+    const present = xi.filter(Boolean);
+    if (new Set(present.map((p) => p.name)).size !== present.length) errs.push("same player picked twice");
     const fc = {}; xi.forEach((p) => { if (p) { const f = franchiseOf(p); fc[f] = (fc[f] || 0) + 1; } });
     if (Object.values(fc).some((c) => c > MAX_PER_FRANCHISE)) errs.push("too many from one franchise");
     return { ok: errs.length === 0, errs };

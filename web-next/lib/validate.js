@@ -13,6 +13,8 @@ function validateSubmission({ day, xi, captainId }, players = PLAYERS, engine = 
   const byId = new Map(players.map((p) => [p.id, p]));
   const picked = xi.map((id) => byId.get(id));
   if (picked.some((p) => !p)) return { ok: false, error: "unknown player id" };
+  // One human per XI — reject the same player twice even across different seasons.
+  if (new Set(picked.map((p) => p.name)).size !== 11) return { ok: false, error: "same player twice" };
 
   // Re-derive the day's fixed deal (deterministic from the date seed) and check every slot.
   const years = engine.assignedYearSequence(day, engine.feasibleYears(players));

@@ -4,7 +4,14 @@
   const E = window.ENGINE, DATA = window.PLAYERS_DATA;
   const P = DATA.players;
   const FEASIBLE = E.feasibleYears(P);
-  const TEAM_LABEL = { KXIP: "PBKS", }; // historical alias display (optional)
+  // Trademark-proof labels: home city / state instead of the franchise brand.
+  // (Internal team codes are untouched, so the max-2-per-franchise rule still works.)
+  const TEAM_LABEL = {
+    MI: "Mumbai", KKR: "Kolkata", RCB: "Bengaluru", CSK: "Chennai",
+    RR: "Rajasthan", SRH: "Hyderabad", DEC: "Hyderabad", KXIP: "Punjab", PBKS: "Punjab",
+    DD: "Delhi", DC: "Delhi", LSG: "Lucknow", GT: "Gujarat", GL: "Gujarat",
+    PWI: "Pune", RPS: "Pune", KTK: "Kerala",
+  };
   const $ = (id) => document.getElementById(id);
 
   const S = { mode: "classic", hideStats: false, seed: null, years: [], round: 0, xi: [], used: new Set(), skips: 2, captainId: null, result: null };
@@ -42,10 +49,13 @@
     // Daily is a FIXED shared deal — never change its years. In the rare corner where a player's own
     // picks leave a slot with no legal option, relax the caps for that slot (so the deal still completes)
     // rather than re-rolling the season. Free Play / IQ instead re-roll to another unused season.
-    S.relax = false;
+    S.relaxCaps = false; S.allowDup = false;
     if (!E.hasPickable(P, S.round, S.years[S.round], S.xi, S.used)) {
       if (S.mode === "daily") {
-        S.relax = true;
+        // No within-cap, distinct option for this fixed slot. First relax only the CAPS (keeping the
+        // XI free of duplicate players); allow an actual duplicate only if even that pool is empty (≈never).
+        const distinct = E.candidates(P, S.round, S.years[S.round], S.xi, S.used, false);
+        if (distinct.length) S.relaxCaps = true; else S.allowDup = true;
       } else {
         let guard = 0;
         while (!E.hasPickable(P, S.round, S.years[S.round], S.xi, S.used) && guard++ < 16) {
@@ -66,9 +76,10 @@
     $("slotRole").textContent = E.ROLE_LABEL[role];
     $("slotYear").textContent = "Season: " + year;
 
-    const cands = E.candidates(P, S.round, year, S.xi, S.used).sort((a, b) => (b.bat + b.bowl) - (a.bat + a.bowl));
+    const relaxed = S.relaxCaps || S.allowDup;
+    const cands = E.candidates(P, S.round, year, S.xi, S.used, S.allowDup).sort((a, b) => (b.bat + b.bowl) - (a.bat + a.bowl));
     $("pool").innerHTML = cands.map((p) => {
-      const isBlocked = S.relax ? false : E.blocked(S.xi, p);
+      const isBlocked = relaxed ? false : E.blocked(S.xi, p);
       const reason = !isBlocked ? "" : (p.os && osCount() >= 4 && E.franchiseCount(S.xi, E.franchiseOf(p)) >= E.MAX_PER_FRANCHISE)
         ? "overseas + team full" : (p.os && osCount() >= 4) ? "overseas full" : "2 from this team";
       const stats = S.hideStats ? "" : E.statLine(p).map((l) => `<div class="statline">${l}</div>`).join("");
@@ -101,9 +112,11 @@
     const p = P.find((x) => x.id === id);
     const chk = E.canPick(S.xi, S.round, p, S.years[S.round], S.used);
     if (!chk.ok) {
-      const hard = chk.reason === "wrong role" || chk.reason === "wrong year" || chk.reason === "already in your XI";
-      // In a relaxed daily corner, allow an over-cap pick so the fixed deal never dead-ends.
-      if (hard || !(S.relax && S.mode === "daily")) return toast(chk.reason === "max 4 overseas" ? "Max 4 overseas players" : chk.reason);
+      const r = chk.reason;
+      // Daily's fixed deal must always complete: relax caps in a corner, and (last resort only) a dup.
+      const capOK = (r === "max 4 overseas" || r === "max 2 from a franchise") && (S.relaxCaps || S.allowDup);
+      const dupOK = (r === "already picked (another season)") && S.allowDup;
+      if (!capOK && !dupOK) return toast(r === "max 4 overseas" ? "Max 4 overseas players" : r);
     }
     S.xi[S.round] = p; S.used.add(id); S.round++; renderRound();
   }
@@ -134,11 +147,11 @@
     const pools = E.SLOTS.map((role, i) => P.filter((p) => p.role === role && p.year === S.years[i]));
     const N = 1500; let total = 0, worse = 0, equal = 0;
     for (let s = 0; s < N; s++) {
-      const xi = [], used = new Set(); let ok = true;
+      const xi = [], usedNames = new Set(); let ok = true;
       for (let i = 0; i < 11; i++) {
-        const opts = pools[i].filter((p) => !used.has(p.id) && !E.blocked(xi, p));
+        const opts = pools[i].filter((p) => !usedNames.has(p.name) && !E.blocked(xi, p));
         if (!opts.length) { ok = false; break; }
-        const p = opts[(Math.random() * opts.length) | 0]; xi[i] = p; used.add(p.id);
+        const p = opts[(Math.random() * opts.length) | 0]; xi[i] = p; usedNames.add(p.name);
       }
       if (!ok) continue;
       const w = E.simulateSeason(xi, xi[(Math.random() * 11) | 0].id).wins;
