@@ -7,6 +7,7 @@ export default function AuthBar() {
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [stage, setStage] = useState("");   // "", "email-sent", "otp"
@@ -32,6 +33,10 @@ export default function AuthBar() {
     const { error } = await supabase.auth.verifyOtp({ phone, token: otp, type: "sms" });
     if (error) setMsg(error.message);
   };
+  const passwordSignIn = async () => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) setMsg(error.message);
+  };
   const signOut = () => supabase.auth.signOut();
 
   const bar = { display: "flex", justifyContent: "flex-end", gap: 8, alignItems: "center", padding: "10px 16px", maxWidth: 760, margin: "0 auto" };
@@ -55,9 +60,11 @@ export default function AuthBar() {
           <button className="btn sm" style={{ width: "100%", marginBottom: 8 }} onClick={() => oauth("google")}>Continue with Google</button>
           <button className="btn sm ghost" style={{ width: "100%", marginBottom: 12 }} onClick={() => oauth("apple")}>Continue with Apple</button>
 
-          <div style={{ color: "#9aa6cf", fontSize: 12, margin: "6px 0" }}>or email magic link</div>
+          <div style={{ color: "#9aa6cf", fontSize: 12, margin: "6px 0" }}>or email</div>
           <input style={input} type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <button className="btn sm ghost" style={{ width: "100%" }} onClick={sendEmail}>Email me a link</button>
+          <input style={input} type="password" placeholder="password (for password sign-in)" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <button className="btn sm" style={{ width: "100%", marginBottom: 6 }} onClick={passwordSignIn}>Sign in with password</button>
+          <button className="btn sm ghost" style={{ width: "100%" }} onClick={sendEmail}>Or email me a magic link</button>
 
           <div style={{ color: "#9aa6cf", fontSize: 12, margin: "12px 0 4px" }}>or phone (OTP)</div>
           {stage !== "otp" ? (
