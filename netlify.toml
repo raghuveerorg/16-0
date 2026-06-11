@@ -1,4 +1,0 @@
-# 16-0 is a static site (no build step). Serve the web/ folder.
-[build]
-  publish = "web"
-  command = ""
