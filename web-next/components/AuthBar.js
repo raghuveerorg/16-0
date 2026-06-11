@@ -49,8 +49,7 @@ export default function AuthBar() {
       <button className="btn sm" onClick={() => setOpen((o) => !o)}>Sign in</button>
       {open && (
         <div style={{ position: "absolute", top: 52, right: 16, width: 290, background: "#1b2240", border: "1px solid #2c3563", borderRadius: 14, padding: 16, zIndex: 50 }}>
-          <button className="btn sm" style={{ width: "100%", marginBottom: 8 }} onClick={() => oauth("google")}>Continue with Google</button>
-          <button className="btn sm ghost" style={{ width: "100%", marginBottom: 12 }} onClick={() => oauth("apple")}>Continue with Apple</button>
+          <button className="btn sm" style={{ width: "100%", marginBottom: 12 }} onClick={() => oauth("google")}>Continue with Google</button>
 
           <div style={{ color: "#9aa6cf", fontSize: 12, margin: "6px 0" }}>or email me a sign-in link</div>
           <input style={input} type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
