@@ -10,7 +10,7 @@ body{background:radial-gradient(1200px 600px at 50% -10%,#1a2240,transparent),va
   -webkit-font-smoothing:antialiased;line-height:1.45}
 .wrap{max-width:760px;margin:0 auto;padding:18px 16px 70px}
 header{text-align:center;padding:14px 0 4px}
-.logo{font-weight:900;font-size:42px;letter-spacing:-1px;line-height:1;
+.logo{margin:0;font-weight:900;font-size:42px;letter-spacing:-1px;line-height:1;
   background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .logo small{display:block;font-size:12.5px;font-weight:700;letter-spacing:1px;color:var(--mut);
   -webkit-text-fill-color:var(--mut);margin-top:4px}
@@ -91,6 +91,9 @@ a{color:var(--acc2)}
 .rank-big{font-size:22px;font-weight:900;color:var(--gold)}
 .rank-sub{font-size:13px;color:var(--txt);margin-top:3px}
 .rank-note{font-size:11px;color:var(--mut);margin-top:5px}
+.nextdaily{text-align:center;background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:12px;margin:12px 0;font-size:14px;color:var(--txt)}
+.nextdaily b{color:var(--acc2);font-variant-numeric:tabular-nums}
 .breakdown{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
 .brow{margin:9px 0}
 .brow .lab{font-size:12.5px;color:var(--txt);margin-bottom:3px}

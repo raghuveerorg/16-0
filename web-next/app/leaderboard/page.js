@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase/server";
+import { istDay } from "@/lib/day";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Leaderboard — 16-0",
+  description: "Daily, Classic and Cricket IQ leaderboards. See who went 16-0 today.",
+  alternates: { canonical: "/leaderboard" },
+};
 
 const MODES = [
   { key: "daily", label: "Daily" },
@@ -14,7 +21,7 @@ const WINDOWS = [
   { key: "alltime", label: "All-time" },
 ];
 
-const ymd = (d) => d.toISOString().slice(0, 10);
+const ymd = (d) => istDay(d); // Daily days are IST-keyed
 const medal = (i) => (i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`);
 
 export default async function Leaderboard({ searchParams }) {
@@ -29,7 +36,7 @@ export default async function Leaderboard({ searchParams }) {
     myHandle = prof?.handle ?? null;
   }
 
-  const today = ymd(new Date());
+  const today = istDay();
   const from = win === "today" ? today : win === "week" ? ymd(new Date(Date.now() - 6 * 86400000)) : null;
   const to = win === "alltime" ? null : today;
 
@@ -65,7 +72,7 @@ export default async function Leaderboard({ searchParams }) {
   const modeLabel = MODES.find((m) => m.key === mode).label;
   const winLabel = WINDOWS.find((w) => w.key === win).label;
   const subtitle = mode === "daily"
-    ? (win === "today" ? `Daily Challenge · ${today} (UTC)` : `Daily Challenge · ${winLabel.toLowerCase()}`)
+    ? (win === "today" ? `Daily Challenge · ${today} (IST)` : `Daily Challenge · ${winLabel.toLowerCase()}`)
     : `${modeLabel} · ${winLabel.toLowerCase()} · ranked by points (wins + team strength)`;
 
   return (

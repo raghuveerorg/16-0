@@ -2,6 +2,8 @@
 import { useEffect, useRef } from "react";
 import { GAME_BODY } from "@/lib/gameHtml";
 import { submitDaily, submitFreeplay, fetchDailyStatus } from "@/lib/submit";
+import { istDay } from "@/lib/day";
+import { GAME_V } from "@/lib/gameAssets";
 
 // Mounts the proven vanilla game (engine/players/app) and wires the Daily-result hook to the backend.
 export default function GamePage() {
@@ -25,7 +27,7 @@ export default function GamePage() {
         if (status.played) {
           window.__dailyStatus__ = status;
           try {
-            const today = new Date().toISOString().slice(0, 10);
+            const today = istDay();
             localStorage.setItem(LS, JSON.stringify({
               date: today, wins: status.wins, losses: status.losses, rank: null,
               xi: status.xi, captainId: status.captainId,
@@ -37,9 +39,9 @@ export default function GamePage() {
           try { localStorage.removeItem(LS); } catch {}
         }
       }
-      await load("/game/players.js");
-      await load("/game/engine.js");
-      await load("/game/app.js");
+      await load(`/game/players.js?v=${GAME_V}`);
+      await load(`/game/engine.js?v=${GAME_V}`);
+      await load(`/game/app.js?v=${GAME_V}`);
     })();
   }, []);
   return <main dangerouslySetInnerHTML={{ __html: GAME_BODY }} />;

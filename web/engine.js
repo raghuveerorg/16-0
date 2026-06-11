@@ -39,7 +39,9 @@
   function hashStr(s) { let h = 2166136261 >>> 0; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
   function mulberry32(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
   function rng(seed) { return mulberry32(typeof seed === "number" ? seed : hashStr(String(seed))); }
-  function dailyKey(d) { d = d || new Date(); return d.toISOString().slice(0, 10); }
+  // The Daily flips at midnight IST (UTC+5:30) — the audience's midnight, not 5:30am IST.
+  // Server day calcs (web-next/lib/day.js) use the same offset; keep them in lockstep.
+  function dailyKey(d) { d = d || new Date(); return new Date(d.getTime() + 330 * 60000).toISOString().slice(0, 10); }
 
   // Which years have at least one player for each role (so the year slot never dead-ends).
   function feasibleYears(players) {

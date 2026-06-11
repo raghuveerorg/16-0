@@ -232,6 +232,7 @@
         `<div class="rank-note">Estimated vs all valid XIs for today's deal</div>`;
       rp.classList.remove("hidden");
     } else rp.classList.add("hidden");
+    renderNextDaily();
     const set = (bar, pct, val) => { $(bar).style.width = Math.round(val * 100) + "%"; $(pct).textContent = Math.round(val * 100); };
     set("batBar", "batPct", r.bn); set("bowlBar", "bowlPct", r.bw);
     set("balBar", "balPct", r.balance); set("strBar", "strPct", r.strength);
@@ -239,6 +240,25 @@
     S.shareText = `My all-time Club T20 XI went ${r.wins}-${r.losses} on 16-0 🏏\n${v.title}\nCaptain: ${r.captain.name} (${r.captain.year})` +
       (S.mode === "daily" ? `\nDaily ${S.seed}` + (r.rank ? ` · Top ${r.rank.pct < 1 ? "<1" : Math.round(r.rank.pct)}%` : "") : "") +
       (S.hideStats ? `\n🧠 Cricket IQ mode (no stats!)` : "") + `\n\nCan your XI go 16-0?`;
+  }
+
+  // Wordle-style retention hook: live countdown to the next Daily (midnight IST — see E.dailyKey)
+  // plus a streak tease. Shown on every result screen so Free Play also funnels into the Daily.
+  function renderNextDaily() {
+    const el = $("nextDaily"); if (!el) return;
+    clearInterval(el._t);
+    const IST = 330 * 60000, DAY = 86400000;
+    const playedToday = S.mode === "daily" || !!loadDaily() || !!(window.__dailyStatus__ && window.__dailyStatus__.played);
+    const tick = () => {
+      const left = DAY - ((Date.now() + IST) % DAY);
+      const h = Math.floor(left / 3600000), m = Math.floor((left % 3600000) / 60000), s = Math.floor((left % 60000) / 1000);
+      const t = h > 0 ? `${h}h ${m}m` : `${m}m ${s}s`;
+      el.innerHTML = playedToday
+        ? `⏳ Next Daily in <b>${t}</b> — come back and keep your streak alive 🔥`
+        : `⏳ Today's Daily ends in <b>${t}</b> — <a href="#" onclick="APP.start('daily');return false">play it now</a> to start a streak 🔥`;
+    };
+    tick(); el._t = setInterval(tick, 1000);
+    el.classList.remove("hidden");
   }
 
   // Upgrade the rank panel with the live backend response (real cross-player rank + streak).
@@ -353,7 +373,7 @@
     try { document.execCommand("copy"); done(); } catch (e) { toast("Copy failed"); }
     document.body.removeChild(ta);
   }
-  function again() { show("start"); }
+  function again() { const el = $("nextDaily"); if (el) clearInterval(el._t); show("start"); }
 
   window.APP = { start, skip, simulate, share, downloadCard, copyText, again };
 

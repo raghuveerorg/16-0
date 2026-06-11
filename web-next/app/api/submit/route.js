@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabase/server";
 import { validateSubmission } from "@/lib/validate";
+import { istDay } from "@/lib/day";
 
 // The ONLY write path for daily_results. Verifies the signed-in user, re-derives the day's deal,
 // re-validates the submitted XI, recomputes the score server-side, then inserts with the service role.
@@ -13,7 +14,7 @@ export async function POST(req) {
   let body;
   try { body = await req.json(); } catch { return NextResponse.json({ error: "bad body" }, { status: 400 }); }
 
-  const day = new Date().toISOString().slice(0, 10); // server's UTC day — ignore any client-supplied day
+  const day = istDay(); // server's IST day — ignore any client-supplied day
   const v = validateSubmission({ day, xi: body.xi, captainId: body.captainId });
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
 

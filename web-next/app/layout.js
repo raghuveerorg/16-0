@@ -24,10 +24,26 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  themeColor: "#0c1020",
+};
+
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "16-0",
+  url: "https://16-0.in",
+  description: DESC,
+  applicationCategory: "GameApplication",
+  operatingSystem: "Any",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
         <AuthBar />
         {children}
       </body>

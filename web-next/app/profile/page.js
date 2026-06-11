@@ -4,6 +4,8 @@ import HandleEditor from "@/components/HandleEditor";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: "Your record — 16-0" };
+
 export default async function Profile() {
   const sb = supabaseServer();
   const { data: { user } } = await sb.auth.getUser();

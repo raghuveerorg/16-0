@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabase/server";
 import { validateFreeplay } from "@/lib/validate";
+import { istDay } from "@/lib/day";
 
 // Records a completed Classic/IQ game for the leaderboards. Server re-validates the XI and recomputes
 // wins + team strength + points — the client-reported score is never trusted.
@@ -16,7 +17,7 @@ export async function POST(req) {
   const v = validateFreeplay({ mode: body.mode, xi: body.xi, captainId: body.captainId });
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
 
-  const day = new Date().toISOString().slice(0, 10);
+  const day = istDay();
   const admin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY,
