@@ -8,8 +8,26 @@ const { computeStreak } = require("./streak.js");
 let pass = 0, fail = 0;
 const t = (n, fn) => { try { fn(); console.log("  ✓ " + n); pass++; } catch (e) { console.log("  ✗ " + n + " — " + e.message); fail++; } };
 
-// Build a legit submission for a given day: the day's deal, best card per slot, with no player
-// repeated (even across seasons) — mirrors the game's one-human-per-XI rule.
+// ---------------------------------------------------------------------------
+// Date helpers — tests use relative offsets so they stay valid after today
+// ---------------------------------------------------------------------------
+function isoDate(offsetDays = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  return d.toISOString().slice(0, 10);
+}
+
+const TODAY = isoDate(0);
+const YESTERDAY = isoDate(-1);
+const TWO_AGO = isoDate(-2);
+const LONG_AGO_1 = isoDate(-12);
+const LONG_AGO_2 = isoDate(-11);
+const LONG_AGO_3 = isoDate(-10);
+
+// ---------------------------------------------------------------------------
+// Build a legit submission for a given day: the day's deal, best card per slot,
+// with no player repeated (even across seasons) — mirrors the game's one-human-per-XI rule.
+// ---------------------------------------------------------------------------
 function legit(day) {
   const years = ENGINE.assignedYearSequence(day, ENGINE.feasibleYears(PLAYERS));
   const usedNames = new Set(), xi = [];
@@ -24,7 +42,7 @@ function legit(day) {
 
 console.log("Score validation");
 t("accepts a legit submission and recomputes wins", () => {
-  const sub = legit("2026-06-11");
+  const sub = legit(TODAY);
   const r = validateSubmission(sub);
   assert.ok(r.ok, r.error);
   assert.ok(r.wins >= 0 && r.wins <= 16 && r.wins + r.losses === 16);
@@ -33,14 +51,14 @@ t("accepts a legit submission and recomputes wins", () => {
   assert.strictEqual(r.wins, ENGINE.simulateSeason(picked, sub.captainId).wins);
 });
 t("client-reported score is ignored (server recomputes)", () => {
-  const sub = legit("2026-06-11"); sub.wins = 16; sub.losses = 0; // attacker claims a perfect score
+  const sub = legit(TODAY); sub.wins = 16; sub.losses = 0; // attacker claims a perfect score
   const r = validateSubmission(sub);
   assert.ok(r.ok);
   const real = ENGINE.simulateSeason(sub.xi.map((id) => PLAYERS.find((p) => p.id === id)), sub.captainId).wins;
   assert.strictEqual(r.wins, real, "server must use its own recompute, not the claimed 16");
 });
 t("rejects a card from the wrong season (off-deal)", () => {
-  const sub = legit("2026-06-11");
+  const sub = legit(TODAY);
   const slotRole = ENGINE.SLOTS[0];
   const wrong = PLAYERS.find((p) => p.role === slotRole && !sub.xi.includes(p.id) &&
     p.year !== PLAYERS.find((q) => q.id === sub.xi[0]).year);
@@ -48,24 +66,27 @@ t("rejects a card from the wrong season (off-deal)", () => {
   assert.strictEqual(validateSubmission(sub).ok, false);
 });
 t("rejects a card in the wrong role slot", () => {
-  const sub = legit("2026-06-11");
+  const sub = legit(TODAY);
   const bowler = PLAYERS.find((p) => p.role === "PACE");
   sub.xi[0] = bowler.id; // opener slot gets a pacer
   assert.strictEqual(validateSubmission(sub).ok, false);
 });
 t("rejects duplicates, wrong length, unknown id, bad day", () => {
-  const sub = legit("2026-06-11");
+  const sub = legit(TODAY);
   assert.strictEqual(validateSubmission({ ...sub, xi: sub.xi.slice(0, 10) }).ok, false);
   assert.strictEqual(validateSubmission({ ...sub, xi: [...sub.xi.slice(0, 10), sub.xi[0]] }).ok, false);
   assert.strictEqual(validateSubmission({ ...sub, xi: [...sub.xi.slice(0, 10), 999999] }).ok, false);
   assert.strictEqual(validateSubmission({ ...sub, day: "not-a-date" }).ok, false);
 });
 t("rejects captain not in the XI", () => {
-  const sub = legit("2026-06-11"); sub.captainId = -1;
+  const sub = legit(TODAY); sub.captainId = -1;
   assert.strictEqual(validateSubmission(sub).ok, false);
 });
 
-// Build a legit free-play XI: correct role per slot, 11 distinct players, 11 distinct seasons, caps ok.
+// ---------------------------------------------------------------------------
+// Build a legit free-play XI: correct role per slot, 11 distinct players,
+// 11 distinct seasons, caps ok.
+// ---------------------------------------------------------------------------
 function legitFree(mode) {
   const usedNames = new Set(), usedYears = new Set(), xi = [], objs = [];
   for (let i = 0; i < 11; i++) {
@@ -101,21 +122,48 @@ t("rejects an unknown mode, dup player, dup season, bad captain", () => {
 
 console.log("Streak");
 t("counts a consecutive run ending today", () => {
-  const s = computeStreak(["2026-06-09", "2026-06-10", "2026-06-11"], "2026-06-11");
+  const s = computeStreak([TWO_AGO, YESTERDAY, TODAY], TODAY);
   assert.deepStrictEqual([s.current, s.longest], [3, 3]);
 });
 t("today not yet played keeps yesterday's streak alive", () => {
-  const s = computeStreak(["2026-06-09", "2026-06-10"], "2026-06-11");
+  const s = computeStreak([TWO_AGO, YESTERDAY], TODAY);
   assert.strictEqual(s.current, 2);
 });
 t("a gap breaks the current streak but longest is retained", () => {
-  const s = computeStreak(["2026-06-01", "2026-06-02", "2026-06-03", "2026-06-10", "2026-06-11"], "2026-06-11");
+  const s = computeStreak([LONG_AGO_1, LONG_AGO_2, LONG_AGO_3, YESTERDAY, TODAY], TODAY);
   assert.strictEqual(s.current, 2);
   assert.strictEqual(s.longest, 3);
 });
 t("empty history => 0/0", () => {
-  const s = computeStreak([], "2026-06-11");
+  const s = computeStreak([], TODAY);
   assert.deepStrictEqual([s.current, s.longest], [0, 0]);
+});
+
+console.log("Engine unit tests");
+t("simulateSeason returns wins + losses summing to 16", () => {
+  const xi = legit(TODAY).xi.map((id) => PLAYERS.find((p) => p.id === id));
+  const { wins, losses } = ENGINE.simulateSeason(xi, xi[5].id);
+  assert.strictEqual(wins + losses, 16);
+  assert.ok(wins >= 0 && wins <= 16);
+});
+t("deterministic: same XI + captainId gives same result", () => {
+  const sub = legit(TODAY);
+  const xi = sub.xi.map((id) => PLAYERS.find((p) => p.id === id));
+  const r1 = ENGINE.simulateSeason(xi, sub.captainId);
+  const r2 = ENGINE.simulateSeason(xi, sub.captainId);
+  assert.strictEqual(r1.wins, r2.wins);
+  assert.strictEqual(r1.losses, r2.losses);
+});
+t("assignedYearSequence returns 11 years for a valid day", () => {
+  const years = ENGINE.assignedYearSequence(TODAY, ENGINE.feasibleYears(PLAYERS));
+  assert.strictEqual(years.length, 11);
+  assert.ok(years.every((y) => typeof y === "number"));
+});
+t("all 11 SLOTS have at least one player in the pool", () => {
+  for (const slot of ENGINE.SLOTS) {
+    const pool = PLAYERS.filter((p) => p.role === slot);
+    assert.ok(pool.length > 0, `No players found for role: ${slot}`);
+  }
 });
 
 console.log("\n" + pass + " passed, " + fail + " failed");

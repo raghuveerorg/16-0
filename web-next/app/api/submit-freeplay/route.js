@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import { validateFreeplay } from "@/lib/validate";
 import { istDay } from "@/lib/day";
+import { rateLimit } from "@/lib/rateLimit";
 
 // Records a completed Classic/IQ game for the leaderboards. Server re-validates the XI and recomputes
 // wins + team strength + points — the client-reported score is never trusted.
 export async function POST(req) {
+  // 20 requests per minute per IP — free play can be rapid but caps abuse
+  const { ok: rl } = rateLimit(req, { limit: 20, windowMs: 60_000 });
+  if (!rl) return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+
   const sb = supabaseServer();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ error: "not signed in" }, { status: 401 });
@@ -18,11 +23,7 @@ export async function POST(req) {
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
 
   const day = istDay();
-  const admin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY,
-    { auth: { persistSession: false } }
-  );
+  const admin = supabaseAdmin();
 
   const { error } = await admin.from("freeplay_results").insert({
     user_id: user.id, mode: body.mode, day,
