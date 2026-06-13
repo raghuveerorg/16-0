@@ -45,8 +45,14 @@ export default function AuthBar() {
     await supabase.auth.signOut();
   };
 
-  const bar = { display: "flex", justifyContent: "flex-end", gap: 8, alignItems: "center", padding: "10px 16px", maxWidth: 760, margin: "0 auto" };
+  const bar = { display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center", padding: "10px 16px", maxWidth: 760, margin: "0 auto" };
   const link = { color: "var(--acc2)", textDecoration: "none", fontWeight: 700, fontSize: 14 };
+  const logoEl = (
+    <a href="/" aria-label="16-0 home" style={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
+      <img src="/logo.png" alt="Draft your All Time T20 Team" width={38} height={38} style={{ borderRadius: 6 }} />
+    </a>
+  );
+  const navLinks = { display: "flex", gap: 8, alignItems: "center" };
   const input = { width: "100%", padding: "9px 10px", margin: "4px 0", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card2)", color: "var(--txt)" };
 
   const themeBtn = (
@@ -58,17 +64,22 @@ export default function AuthBar() {
   if (user) {
     return (
       <div style={bar}>
-        <a href="/leaderboard" style={link}>Leaderboard</a>
-        <a href="/how-to-play" style={{ ...link, fontWeight: 500, color: "var(--mut)" }}>How to Play</a>
-        <a href="/profile" style={link}>My streak & history</a>
-        {themeBtn}
-        <button className="btn ghost sm" onClick={signOut}>Sign out</button>
+        {logoEl}
+        <div style={navLinks}>
+          <a href="/leaderboard" style={link}>Leaderboard</a>
+          <a href="/how-to-play" style={{ ...link, fontWeight: 500, color: "var(--mut)" }}>How to Play</a>
+          <a href="/profile" style={link}>My streak & history</a>
+          {themeBtn}
+          <button className="btn ghost sm" onClick={signOut}>Sign out</button>
+        </div>
       </div>
     );
   }
 
   return (
     <div style={{ ...bar, position: "relative" }}>
+      {logoEl}
+      <div style={navLinks}>
       <a href="/leaderboard" style={link}>Leaderboard</a>
       <a href="/how-to-play" style={{ ...link, fontWeight: 500, color: "var(--mut)" }}>How to Play</a>
       {themeBtn}
@@ -94,6 +105,7 @@ export default function AuthBar() {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 }

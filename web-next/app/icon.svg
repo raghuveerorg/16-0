@@ -1,12 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ff5a36"/>
-      <stop offset="1" stop-color="#ffb020"/>
-    </linearGradient>
-  </defs>
+  <!-- Dark background tile -->
   <rect width="64" height="64" rx="14" fill="#0c1020"/>
-  <circle cx="32" cy="32" r="19" fill="url(#g)"/>
-  <path d="M22 18 Q32 32 22 46" stroke="#fff" stroke-width="2.4" fill="none" stroke-dasharray="3 3" opacity=".9"/>
-  <path d="M42 18 Q32 32 42 46" stroke="#fff" stroke-width="2.4" fill="none" stroke-dasharray="3 3" opacity=".9"/>
+  <!-- Three stumps -->
+  <rect x="19" y="16" width="3.5" height="26" rx="1" fill="#ff8714"/>
+  <rect x="30.25" y="16" width="3.5" height="26" rx="1" fill="#ff8714"/>
+  <rect x="41.5" y="16" width="3.5" height="26" rx="1" fill="#ff8714"/>
+  <!-- Bails -->
+  <rect x="16.5" y="14" width="9" height="2.5" rx="1" fill="#ffaf50"/>
+  <rect x="27.75" y="14" width="9" height="2.5" rx="1" fill="#ffaf50"/>
+  <rect x="39" y="14" width="9" height="2.5" rx="1" fill="#ffaf50"/>
+  <!-- Bat (rotated trapezoid: wide blade at bottom, narrow handle at top) -->
+  <!-- Using a rotated rectangle as simplified bat shape -->
+  <g transform="rotate(-20 32 32)">
+    <polygon points="29,10 33,10 37,42 25,42" fill="#ff8714"/>
+  </g>
+  <!-- Ground line -->
+  <line x1="12" y1="43" x2="52" y2="43" stroke="#ff8714" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>
 </svg>
