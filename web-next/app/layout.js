@@ -1,5 +1,7 @@
 import "./game.css";
 import AuthBar from "@/components/AuthBar";
+import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
 
 const TITLE = "16-0 — Can your all-time T20 Cricket XI go unbeaten?";
 const DESC = "Pick an all-time T20 cricket XI from real player stats, name a captain, and simulate a 16-game season. Can you go unbeaten? Free daily challenge + Cricket IQ mode.";
@@ -99,8 +101,17 @@ export default function RootLayout({ children }) {
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_APP) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_FAQ) }} />
+        {/* Google Analytics */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-5XW2EK7F5M" strategy="afterInteractive" />
+        <Script id="ga-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-5XW2EK7F5M');
+        `}</Script>
         <AuthBar />
         {children}
+        <Analytics />
       </body>
     </html>
   );
