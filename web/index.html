@@ -11,12 +11,73 @@
 <body>
 <div class="wrap">
   <header>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:4px">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">🌙</button>
+    </div>
     <h1 class="logo">16-0<small>ALL-TIME CLUB T20 · UNBEATEN CHALLENGE</small></h1>
     <p class="tag" id="tag">Win all 14 league games, Qualifier 1 and the Final. Go 16-0.</p>
   </header>
 
   <!-- START / MODE PICK -->
   <section id="start">
+    <!-- Hero illustration -->
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 760 180" fill="none" xmlns="http://www.w3.org/2000/svg" class="hero-svg">
+        <!-- Stadium lights glow -->
+        <ellipse cx="120" cy="30" rx="60" ry="40" fill="url(#lg1)" opacity="0.5"/>
+        <ellipse cx="640" cy="30" rx="60" ry="40" fill="url(#lg2)" opacity="0.5"/>
+        <!-- Pitch surface -->
+        <rect x="290" y="100" width="180" height="70" rx="6" fill="#1e2840" opacity="0.9"/>
+        <rect x="290" y="100" width="180" height="70" rx="6" stroke="#2c3563" stroke-width="1"/>
+        <!-- Pitch crease lines -->
+        <line x1="305" y1="118" x2="455" y2="118" stroke="#3a4570" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <line x1="305" y1="152" x2="455" y2="152" stroke="#3a4570" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <!-- Stumps left -->
+        <rect x="316" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
+        <rect x="322" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
+        <rect x="328" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
+        <rect x="313" y="110" width="21" height="3" rx="1.5" fill="#ffcf45"/>
+        <rect x="313" y="114" width="21" height="3" rx="1.5" fill="#ffcf45"/>
+        <!-- Stumps right -->
+        <rect x="429" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
+        <rect x="435" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
+        <rect x="441" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
+        <rect x="426" y="110" width="21" height="3" rx="1.5" fill="#ffcf45"/>
+        <rect x="426" y="114" width="21" height="3" rx="1.5" fill="#ffcf45"/>
+        <!-- Cricket ball with motion trail -->
+        <ellipse cx="220" cy="85" rx="5" ry="5" fill="#ff4020" opacity="0.2"/>
+        <ellipse cx="235" cy="79" rx="5" ry="5" fill="#ff4020" opacity="0.4"/>
+        <ellipse cx="252" cy="72" rx="6" ry="6" fill="#ff5a36" opacity="0.7"/>
+        <circle cx="270" cy="65" r="7" fill="#ff5a36"/>
+        <path d="M267 62 Q270 65 273 62" stroke="#c03010" stroke-width="1" fill="none"/>
+        <path d="M267 68 Q270 65 273 68" stroke="#c03010" stroke-width="1" fill="none"/>
+        <!-- Bat silhouette (batter in stance) -->
+        <path d="M370 60 L355 130 L365 132 L380 62 Z" fill="#2a3558" stroke="#3a4570" stroke-width="1"/>
+        <rect x="363" y="56" width="10" height="16" rx="5" fill="#3a4570"/>
+        <!-- Score display -->
+        <rect x="540" y="60" width="120" height="60" rx="10" fill="#1b2240" stroke="#2c3563" stroke-width="1"/>
+        <text x="600" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="900" font-size="22" fill="#ffcf45">16-0</text>
+        <text x="600" y="102" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" font-size="9" fill="#9aa6cf" letter-spacing="1">UNBEATEN</text>
+        <text x="600" y="113" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" font-size="9" fill="#9aa6cf" letter-spacing="1">CHALLENGE</text>
+        <!-- Stars -->
+        <text x="80" y="75" font-size="14" fill="#ffb020" opacity="0.6">✦</text>
+        <text x="670" y="90" font-size="10" fill="#ff9ad1" opacity="0.5">✦</text>
+        <text x="170" y="50" font-size="8" fill="#37c2ff" opacity="0.4">✦</text>
+        <text x="580" y="45" font-size="8" fill="#ffb020" opacity="0.4">✦</text>
+        <!-- Ground arc -->
+        <ellipse cx="380" cy="168" rx="280" ry="16" fill="#13192e"/>
+        <defs>
+          <radialGradient id="lg1" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffb020" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#ffb020" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="lg2" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#37c2ff" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#37c2ff" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
     <div class="center hero">
       <button class="btn big" type="button" onclick="APP.start('daily')">🏏 Start today's Daily Draft</button>
       <button class="btn ghost" type="button" onclick="APP.start('classic')">Play Free — no sign-in</button>
@@ -114,6 +175,31 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<script>
+// Theme toggle — persisted to localStorage, applied before first paint to avoid flash
+(function () {
+  const LS_KEY = "16-0-theme";
+  const root = document.documentElement;
+  function applyTheme(t) {
+    root.setAttribute("data-theme", t);
+    const btn = document.getElementById("themeToggle");
+    if (btn) { btn.textContent = t === "light" ? "🌙" : "☀️"; btn.title = t === "light" ? "Switch to dark mode" : "Switch to light mode"; }
+    try { localStorage.setItem(LS_KEY, t); } catch {}
+  }
+  // Apply saved preference immediately (no flash)
+  const saved = (() => { try { return localStorage.getItem(LS_KEY); } catch {} })();
+  applyTheme(saved === "light" ? "light" : "dark");
+  window.__toggleTheme = function () {
+    applyTheme(root.getAttribute("data-theme") === "light" ? "dark" : "light");
+  };
+  document.addEventListener("DOMContentLoaded", function () {
+    const btn = document.getElementById("themeToggle");
+    if (btn) btn.addEventListener("click", window.__toggleTheme);
+    // Re-apply to update button label after DOM is ready
+    applyTheme(root.getAttribute("data-theme") || "dark");
+  });
+})();
+</script>
 <script src="players.js"></script>
 <script src="engine.js"></script>
 <script src="app.js"></script>

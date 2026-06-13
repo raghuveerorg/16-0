@@ -2,12 +2,24 @@
   --bg:#0c1020; --card:#1b2240; --card2:#232c52; --line:#2c3563;
   --txt:#eaf0ff; --mut:#9aa6cf; --acc:#ff5a36; --acc2:#ffb020;
   --bat:#37c2ff; --bowl:#7cf07c; --good:#3ddc84; --bad:#ff5a5a; --gold:#ffcf45;
+  --body-bg-grad:radial-gradient(1200px 600px at 50% -10%,#1a2240,transparent);
+}
+[data-theme="light"]{
+  --bg:#f4f6fb; --card:#ffffff; --card2:#eef1f8; --line:#d0d8ee;
+  --txt:#0f1629; --mut:#5a6a99; --acc:#e84820; --acc2:#d4880a;
+  --bat:#0d7abf; --bowl:#1a9a3a; --good:#1a9a3a; --bad:#cc2222; --gold:#b8720a;
+  --body-bg-grad:radial-gradient(1200px 600px at 50% -10%,#dce4f8,transparent);
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:radial-gradient(1200px 600px at 50% -10%,#1a2240,transparent),var(--bg);
+body{background:var(--body-bg-grad),var(--bg);
   color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;line-height:1.45}
+  -webkit-font-smoothing:antialiased;line-height:1.45;transition:background .2s,color .2s}
+/* Theme toggle button */
+.theme-toggle{background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:5px 11px;font-size:13px;cursor:pointer;color:var(--mut);font-weight:700;
+  transition:border-color .12s,color .12s;line-height:1}
+.theme-toggle:hover{border-color:var(--acc2);color:var(--txt)}
 .wrap{max-width:760px;margin:0 auto;padding:18px 16px 70px}
 header{text-align:center;padding:14px 0 4px}
 .logo{margin:0;font-weight:900;font-size:42px;letter-spacing:-1px;line-height:1;
@@ -27,6 +39,11 @@ header{text-align:center;padding:14px 0 4px}
 .btn.big{padding:16px 28px;font-size:18px;border-radius:14px}
 .center{text-align:center}
 .hero{margin:18px 0 4px}
+/* Hero cricket illustration */
+.hero-art{width:100%;max-width:760px;margin:10px auto 0;overflow:hidden;border-radius:16px;
+  background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid var(--line)}
+.hero-svg{width:100%;height:auto;display:block}
+@media(max-width:480px){.hero-art{border-radius:12px}}
 button:focus-visible,.btn:focus-visible,.mode:focus-visible,.pcard:focus-visible,.rchip:focus-visible{
   outline:2px solid var(--acc2);outline-offset:2px}
 .hidden{display:none!important}
@@ -57,32 +74,47 @@ a{color:var(--acc2)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:540px){.grid{grid-template-columns:1fr}.mode{min-width:100%}}
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;
-  transition:border-color .12s,transform .08s;position:relative;font:inherit;color:var(--txt);text-align:left;width:100%;display:block}
-.pcard:hover{border-color:var(--acc)}
+  transition:border-color .15s,transform .1s,box-shadow .15s;position:relative;font:inherit;color:var(--txt);text-align:left;width:100%;display:block}
+.pcard:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,90,54,.18)}
 .pcard:active{transform:translateY(1px)}
 .pcard.disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.5)}
 .pcard.eramatch{box-shadow:0 0 0 1.5px var(--acc2) inset}
-.pcard .nm{font-weight:800;font-size:15px}
+/* Pick animation */
+@keyframes pickFlash{0%{background:var(--card)}40%{background:#1e3d28;border-color:var(--good);box-shadow:0 0 0 2px var(--good)}100%{background:var(--card)}}
+.pcard.picked{animation:pickFlash .26s ease-out forwards;pointer-events:none}
+.pcard.picked::after{content:"✓";position:absolute;top:10px;right:12px;font-size:18px;color:var(--good);font-weight:900}
+.pcard .nm{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .pcard .meta{font-size:11.5px;color:var(--mut);margin:2px 0 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+/* Stat rating badges */
+.prating{font-size:10px;font-weight:700;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.rating-elite{background:#2a3d1a;color:#7cf07c;border:1px solid #3d6025}
+.rating-good{background:#1a2a3d;color:#37c2ff;border:1px solid #1f4060}
+.rating-weak{background:#2a1a1a;color:#9aa6cf;border:1px solid #3d2020}
 .os{background:#3a2440;color:#ff9ad1;border:1px solid #5a3056;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:700}
 .ind{background:#1f3a2a;color:#9affc4;border:1px solid #2f5a40;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:700}
 .eratag{background:#23284a;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:10px;color:var(--acc2)}
 .teamtag{background:#23284a;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:10.5px;color:var(--acc2);font-weight:700;letter-spacing:.3px}
 .statline{font-size:13px;color:var(--txt);font-variant-numeric:tabular-nums;margin-top:6px;
-  background:#10152e;border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+  background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 9px}
 .statline + .statline{margin-top:5px}
-.bar{height:7px;border-radius:6px;background:#0e1226;overflow:hidden;margin:4px 0}
+.bar{height:7px;border-radius:6px;background:var(--card2);overflow:hidden;margin:4px 0}
 .bar > i{display:block;height:100%}
 .lab{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut)}
 .hint{color:var(--mut);font-size:11px}
 
-.roster{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
+/* XI tracker — sticky during draft, scrollable row */
+.roster{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0;
+  position:sticky;bottom:0;background:linear-gradient(0deg,var(--bg) 80%,transparent);
+  padding:10px 0 6px;z-index:10}
 .rchip{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:5px 9px;font-size:11.5px;
-  font:inherit;font-size:11.5px;color:var(--txt);text-align:left}
+  font:inherit;font-size:11.5px;color:var(--txt);text-align:left;transition:border-color .15s}
 .rchip.empty{border-style:dashed;color:var(--mut)}
+.rchip.filled{border-color:var(--good);background:rgba(61,220,132,.08)}
+.rchip.current{border-color:var(--acc2)!important;box-shadow:0 0 0 1px var(--acc2) inset}
 .rchip.cap{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset;cursor:default}
 .rchip.click{cursor:pointer}
 .rchip .r{color:var(--mut);font-size:9.5px;display:block;text-transform:uppercase;letter-spacing:.5px}
+.rchip .rname{font-weight:700;font-size:12px}
 
 .record{font-size:78px;font-weight:900;text-align:center;letter-spacing:-2px;line-height:1;margin:8px 0}
 .verdict{text-align:center;font-size:19px;font-weight:800;margin:4px 0 2px}

@@ -94,13 +94,24 @@
 
     const relaxed = S.relaxCaps || S.allowDup;
     const cands = E.candidates(P, S.round, year, S.xi, S.used, S.allowDup).sort((a, b) => (b.bat + b.bowl) - (a.bat + a.bowl));
+    // Compute rating thresholds from this candidate pool so ratings are relative to the field shown
+    const scores = cands.map((p) => p.bat + p.bowl);
+    const maxScore = Math.max(...scores), minScore = Math.min(...scores);
+    const range = maxScore - minScore || 1;
+    function playerRating(p) {
+      const norm = (p.bat + p.bowl - minScore) / range;
+      if (norm >= 0.65) return { label: "⭐ Elite", cls: "rating-elite" };
+      if (norm >= 0.32) return { label: "✓ Good", cls: "rating-good" };
+      return { label: "◦ Weak", cls: "rating-weak" };
+    }
     $("pool").innerHTML = cands.map((p) => {
       const isBlocked = relaxed ? false : E.blocked(S.xi, p);
       const reason = !isBlocked ? "" : (p.os && osCount() >= 4 && E.franchiseCount(S.xi, E.franchiseOf(p)) >= E.MAX_PER_FRANCHISE)
         ? "overseas + team full" : (p.os && osCount() >= 4) ? "overseas full" : "2 from this team";
       const stats = S.hideStats ? "" : E.statLine(p).map((l) => `<div class="statline">${l}</div>`).join("");
+      const rating = !S.hideStats ? playerRating(p) : null;
       return `<button type="button" class="pcard ${isBlocked ? "disabled" : ""}" ${isBlocked ? "disabled" : `data-id="${p.id}"`} aria-label="Pick ${p.name}${isBlocked ? " (unavailable: " + reason + ")" : ""}">
-        <div class="nm">${p.name}</div>
+        <div class="nm">${p.name}${rating ? `<span class="prating ${rating.cls}">${rating.label}</span>` : ""}</div>
         <div class="meta">
           <span class="${p.os ? "os" : "ind"}">${p.os ? "OVERSEAS" : "DOMESTIC"}</span>
           <span class="teamtag">${team(p.team)}</span>
@@ -118,8 +129,9 @@
     let html = "";
     for (let i = 0; i < 11; i++) {
       const p = S.xi[i];
-      if (p) html += `<div class="rchip"><span class="r">${E.ROLE_LABEL[E.SLOTS[i]]}</span>${p.name} · ${team(p.team)} ${p.year}</div>`;
-      else html += `<div class="rchip empty"><span class="r">${E.ROLE_LABEL[E.SLOTS[i]]}</span>—</div>`;
+      const isCurrent = i === S.round;
+      if (p) html += `<div class="rchip filled${isCurrent ? " current" : ""}"><span class="r">${E.ROLE_LABEL[E.SLOTS[i]]}</span><span class="rname">${p.name}</span></div>`;
+      else html += `<div class="rchip empty${isCurrent ? " current" : ""}"><span class="r">${E.ROLE_LABEL[E.SLOTS[i]]}</span>—</div>`;
     }
     $("roster").innerHTML = html;
   }
@@ -134,7 +146,14 @@
       const dupOK = (r === "already picked (another season)") && S.allowDup;
       if (!capOK && !dupOK) return toast(r === "max 4 overseas" ? "Max 4 overseas players" : r);
     }
-    S.xi[S.round] = p; S.used.add(id); S.round++; renderRound();
+    // Animate the selected card before advancing
+    const el = $("pool").querySelector(`[data-id="${id}"]`);
+    if (el) {
+      el.classList.add("picked");
+      setTimeout(() => { S.xi[S.round] = p; S.used.add(id); S.round++; renderRound(); }, 260);
+    } else {
+      S.xi[S.round] = p; S.used.add(id); S.round++; renderRound();
+    }
   }
 
   function skip() {
@@ -237,6 +256,7 @@
     set("batBar", "batPct", r.bn); set("bowlBar", "bowlPct", r.bw);
     set("balBar", "balPct", r.balance); set("strBar", "strPct", r.strength);
     drawCard(r, v);
+    if (r.wins === 16) setTimeout(() => launchConfetti(), 300);
     S.shareText = `My all-time Club T20 XI went ${r.wins}-${r.losses} on 16-0 🏏\n${v.title}\nCaptain: ${r.captain.name} (${r.captain.year})` +
       (S.mode === "daily" ? `\nDaily ${S.seed}` + (r.rank ? ` · Top ${r.rank.pct < 1 ? "<1" : Math.round(r.rank.pct)}%` : "") : "") +
       (S.hideStats ? `\n🧠 Cricket IQ mode (no stats!)` : "") + `\n\nCan your XI go 16-0?`;
@@ -374,6 +394,40 @@
     document.body.removeChild(ta);
   }
   function again() { const el = $("nextDaily"); if (el) clearInterval(el._t); show("start"); }
+
+  function launchConfetti() {
+    const canvas = document.createElement("canvas");
+    canvas.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999";
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const COLORS = ["#ff5a36","#ffb020","#ffcf45","#3ddc84","#37c2ff","#ff9ad1"];
+    const pieces = Array.from({length: 120}, () => ({
+      x: Math.random() * canvas.width, y: -10 - Math.random() * 100,
+      vx: (Math.random() - 0.5) * 4, vy: 2 + Math.random() * 4,
+      angle: Math.random() * Math.PI * 2, spin: (Math.random() - 0.5) * 0.2,
+      w: 8 + Math.random() * 8, h: 4 + Math.random() * 4,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)], life: 1,
+    }));
+    let raf;
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+      pieces.forEach((p) => {
+        p.x += p.vx; p.y += p.vy; p.angle += p.spin; p.vy += 0.06; p.life -= 0.008;
+        if (p.life <= 0 || p.y > canvas.height) return;
+        alive = true;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color; ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      });
+      if (alive) raf = requestAnimationFrame(draw);
+      else { document.body.removeChild(canvas); }
+    }
+    raf = requestAnimationFrame(draw);
+    setTimeout(() => { cancelAnimationFrame(raf); if (canvas.parentNode) document.body.removeChild(canvas); }, 5000);
+  }
 
   window.APP = { start, skip, simulate, share, downloadCard, copyText, again };
 
