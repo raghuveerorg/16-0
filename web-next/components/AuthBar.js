@@ -59,6 +59,7 @@ export default function AuthBar() {
     return (
       <div style={bar}>
         <a href="/leaderboard" style={link}>Leaderboard</a>
+        <a href="/how-to-play" style={{ ...link, fontWeight: 500, color: "var(--mut)" }}>How to Play</a>
         <a href="/profile" style={link}>My streak & history</a>
         {themeBtn}
         <button className="btn ghost sm" onClick={signOut}>Sign out</button>
@@ -69,6 +70,7 @@ export default function AuthBar() {
   return (
     <div style={{ ...bar, position: "relative" }}>
       <a href="/leaderboard" style={link}>Leaderboard</a>
+      <a href="/how-to-play" style={{ ...link, fontWeight: 500, color: "var(--mut)" }}>How to Play</a>
       {themeBtn}
       <button className="btn sm" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="dialog">Sign in</button>
       {open && (
