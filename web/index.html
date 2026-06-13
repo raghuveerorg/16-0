@@ -20,49 +20,87 @@
     <!-- Hero illustration -->
     <div class="hero-art" aria-hidden="true">
       <svg viewBox="0 0 760 180" fill="none" xmlns="http://www.w3.org/2000/svg" class="hero-svg">
-        <!-- Stadium lights glow -->
-        <ellipse cx="120" cy="30" rx="60" ry="40" fill="url(#lg1)" opacity="0.5"/>
-        <ellipse cx="640" cy="30" rx="60" ry="40" fill="url(#lg2)" opacity="0.5"/>
-        <!-- Pitch surface -->
-        <rect x="290" y="100" width="180" height="70" rx="6" fill="#1e2840" opacity="0.9"/>
-        <rect x="290" y="100" width="180" height="70" rx="6" stroke="#2c3563" stroke-width="1"/>
-        <!-- Pitch crease lines -->
-        <line x1="305" y1="118" x2="455" y2="118" stroke="#3a4570" stroke-width="1.5" stroke-dasharray="4 3"/>
-        <line x1="305" y1="152" x2="455" y2="152" stroke="#3a4570" stroke-width="1.5" stroke-dasharray="4 3"/>
-        <!-- Stumps left -->
-        <rect x="316" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
-        <rect x="322" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
-        <rect x="328" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
-        <rect x="313" y="110" width="21" height="3" rx="1.5" fill="#ffcf45"/>
-        <rect x="313" y="114" width="21" height="3" rx="1.5" fill="#ffcf45"/>
-        <!-- Stumps right -->
-        <rect x="429" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
-        <rect x="435" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
-        <rect x="441" y="110" width="3" height="28" rx="1.5" fill="#ffb020"/>
-        <rect x="426" y="110" width="21" height="3" rx="1.5" fill="#ffcf45"/>
-        <rect x="426" y="114" width="21" height="3" rx="1.5" fill="#ffcf45"/>
-        <!-- Cricket ball with motion trail -->
-        <ellipse cx="220" cy="85" rx="5" ry="5" fill="#ff4020" opacity="0.2"/>
-        <ellipse cx="235" cy="79" rx="5" ry="5" fill="#ff4020" opacity="0.4"/>
-        <ellipse cx="252" cy="72" rx="6" ry="6" fill="#ff5a36" opacity="0.7"/>
-        <circle cx="270" cy="65" r="7" fill="#ff5a36"/>
-        <path d="M267 62 Q270 65 273 62" stroke="#c03010" stroke-width="1" fill="none"/>
-        <path d="M267 68 Q270 65 273 68" stroke="#c03010" stroke-width="1" fill="none"/>
-        <!-- Bat silhouette (batter in stance) -->
-        <path d="M370 60 L355 130 L365 132 L380 62 Z" fill="#2a3558" stroke="#3a4570" stroke-width="1"/>
-        <rect x="363" y="56" width="10" height="16" rx="5" fill="#3a4570"/>
-        <!-- Score display -->
-        <rect x="540" y="60" width="120" height="60" rx="10" fill="#1b2240" stroke="#2c3563" stroke-width="1"/>
-        <text x="600" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="900" font-size="22" fill="#ffcf45">16-0</text>
-        <text x="600" y="102" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" font-size="9" fill="#9aa6cf" letter-spacing="1">UNBEATEN</text>
-        <text x="600" y="113" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" font-size="9" fill="#9aa6cf" letter-spacing="1">CHALLENGE</text>
-        <!-- Stars -->
-        <text x="80" y="75" font-size="14" fill="#ffb020" opacity="0.6">✦</text>
-        <text x="670" y="90" font-size="10" fill="#ff9ad1" opacity="0.5">✦</text>
-        <text x="170" y="50" font-size="8" fill="#37c2ff" opacity="0.4">✦</text>
-        <text x="580" y="45" font-size="8" fill="#ffb020" opacity="0.4">✦</text>
-        <!-- Ground arc -->
-        <ellipse cx="380" cy="168" rx="280" ry="16" fill="#13192e"/>
+        <!-- Stadium atmosphere glows -->
+        <ellipse cx="80" cy="28" rx="55" ry="36" fill="url(#lg1)" opacity="0.45"/>
+        <ellipse cx="680" cy="28" rx="55" ry="36" fill="url(#lg2)" opacity="0.45"/>
+        <!-- Ground oval -->
+        <ellipse cx="380" cy="170" rx="310" ry="14" fill="#0a0e1c"/>
+        <!-- Pitch surface strip (side view) -->
+        <rect x="186" y="153" width="368" height="13" rx="2" fill="#111826"/>
+        <!-- Crease lines -->
+        <line x1="197" y1="149" x2="222" y2="149" stroke="#1c2d50" stroke-width="1"/>
+        <line x1="510" y1="149" x2="542" y2="149" stroke="#1c2d50" stroke-width="1"/>
+
+        <!-- ── Wicketkeeper (drawn first, stumps appear in front) ── -->
+        <g stroke="#ff8714" fill="#ff8714" stroke-linecap="round">
+          <circle cx="572" cy="116" r="8" stroke="none"/>
+          <line x1="572" y1="126" x2="571" y2="148" stroke-width="13" fill="none"/>
+          <line x1="562" y1="131" x2="546" y2="123" stroke-width="7" fill="none"/>
+          <ellipse cx="540" cy="120" rx="9" ry="6" stroke="none"/>
+          <line x1="581" y1="130" x2="562" y2="119" stroke-width="7" fill="none"/>
+          <ellipse cx="557" cy="116" rx="8" ry="6" stroke="none"/>
+          <line x1="566" y1="148" x2="557" y2="161" stroke-width="9" fill="none"/>
+          <line x1="557" y1="161" x2="554" y2="166" stroke-width="8" fill="none"/>
+          <line x1="577" y1="148" x2="588" y2="161" stroke-width="9" fill="none"/>
+          <line x1="588" y1="161" x2="591" y2="166" stroke-width="8" fill="none"/>
+        </g>
+
+        <!-- ── Striker stumps (batting end, x≈533) ── -->
+        <g fill="#ff8714">
+          <rect x="527" y="129" width="3" height="37" rx="1"/>
+          <rect x="533" y="129" width="3" height="37" rx="1"/>
+          <rect x="539" y="129" width="3" height="37" rx="1"/>
+          <rect x="526" y="126.5" width="7.5" height="2.5" rx="1" fill="#ffb04e"/>
+          <rect x="532" y="126.5" width="7.5" height="2.5" rx="1" fill="#ffb04e"/>
+        </g>
+
+        <!-- ── Batsman (right-handed, facing left, bat raised) ── -->
+        <g stroke="#ff8714" fill="#ff8714" stroke-linecap="round">
+          <circle cx="493" cy="88" r="9" stroke="none"/>
+          <rect x="481" y="86" width="13" height="4" rx="2" stroke="none"/>
+          <line x1="493" y1="99" x2="493" y2="136" stroke-width="15" fill="none"/>
+          <line x1="484" y1="104" x2="477" y2="119" stroke-width="7" fill="none"/>
+          <line x1="502" y1="102" x2="508" y2="89" stroke-width="7" fill="none"/>
+          <line x1="489" y1="129" x2="509" y2="87" stroke-width="4" fill="none"/>
+          <rect x="507" y="68" width="11" height="30" rx="3" transform="rotate(18 512 83)" stroke="none"/>
+          <line x1="487" y1="136" x2="482" y2="153" stroke-width="10" fill="none"/>
+          <line x1="482" y1="153" x2="480" y2="166" stroke-width="9" fill="none"/>
+          <line x1="499" y1="136" x2="505" y2="152" stroke-width="10" fill="none"/>
+          <line x1="505" y1="152" x2="506" y2="166" stroke-width="9" fill="none"/>
+        </g>
+
+        <!-- ── Non-striker stumps (bowling end, x≈205) ── -->
+        <g fill="#ff8714">
+          <rect x="200" y="138" width="2.5" height="28" rx="1"/>
+          <rect x="205.5" y="138" width="2.5" height="28" rx="1"/>
+          <rect x="211" y="138" width="2.5" height="28" rx="1"/>
+          <rect x="199" y="135.5" width="6" height="2.5" rx="1" fill="#ffb04e"/>
+          <rect x="204.5" y="135.5" width="6" height="2.5" rx="1" fill="#ffb04e"/>
+        </g>
+
+        <!-- ── Bowler (delivery stride, right-arm, from left) ── -->
+        <g stroke="#ff8714" fill="#ff8714" stroke-linecap="round">
+          <circle cx="113" cy="88" r="9" stroke="none"/>
+          <line x1="115" y1="99" x2="117" y2="134" stroke-width="14" fill="none"/>
+          <line x1="122" y1="103" x2="133" y2="90" stroke-width="8" fill="none"/>
+          <line x1="133" y1="90" x2="136" y2="75" stroke-width="7" fill="none"/>
+          <line x1="108" y1="104" x2="100" y2="118" stroke-width="7" fill="none"/>
+          <line x1="112" y1="134" x2="108" y2="151" stroke-width="10" fill="none"/>
+          <line x1="108" y1="151" x2="106" y2="166" stroke-width="9" fill="none"/>
+          <line x1="121" y1="132" x2="130" y2="151" stroke-width="10" fill="none"/>
+          <line x1="130" y1="151" x2="132" y2="166" stroke-width="9" fill="none"/>
+        </g>
+
+        <!-- ── Cricket ball in flight ── -->
+        <ellipse cx="278" cy="127" rx="4" ry="4" fill="#d42b00" opacity="0.2"/>
+        <ellipse cx="298" cy="122" rx="5" ry="5" fill="#d42b00" opacity="0.38"/>
+        <circle cx="320" cy="117" r="6" fill="#d42b00" opacity="0.9"/>
+
+        <!-- Sparkles -->
+        <text x="52" y="72" font-size="12" fill="#ffb020" opacity="0.5">✦</text>
+        <text x="658" y="85" font-size="9" fill="#ff9ad1" opacity="0.4">✦</text>
+        <text x="640" y="52" font-size="7" fill="#ffb020" opacity="0.35">✦</text>
+
         <defs>
           <radialGradient id="lg1" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="#ffb020" stop-opacity="0.8"/>
