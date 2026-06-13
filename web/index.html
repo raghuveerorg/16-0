@@ -11,9 +11,6 @@
 <body>
 <div class="wrap">
   <header>
-    <div style="display:flex;justify-content:flex-end;margin-bottom:4px">
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">🌙</button>
-    </div>
     <h1 class="logo">16-0<small>ALL-TIME CLUB T20 · UNBEATEN CHALLENGE</small></h1>
     <p class="tag" id="tag">Win all 14 league games, Qualifier 1 and the Final. Go 16-0.</p>
   </header>
@@ -175,31 +172,6 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<script>
-// Theme toggle — persisted to localStorage, applied before first paint to avoid flash
-(function () {
-  const LS_KEY = "16-0-theme";
-  const root = document.documentElement;
-  function applyTheme(t) {
-    root.setAttribute("data-theme", t);
-    const btn = document.getElementById("themeToggle");
-    if (btn) { btn.textContent = t === "light" ? "🌙" : "☀️"; btn.title = t === "light" ? "Switch to dark mode" : "Switch to light mode"; }
-    try { localStorage.setItem(LS_KEY, t); } catch {}
-  }
-  // Apply saved preference immediately (no flash)
-  const saved = (() => { try { return localStorage.getItem(LS_KEY); } catch {} })();
-  applyTheme(saved === "light" ? "light" : "dark");
-  window.__toggleTheme = function () {
-    applyTheme(root.getAttribute("data-theme") === "light" ? "dark" : "light");
-  };
-  document.addEventListener("DOMContentLoaded", function () {
-    const btn = document.getElementById("themeToggle");
-    if (btn) btn.addEventListener("click", window.__toggleTheme);
-    // Re-apply to update button label after DOM is ready
-    applyTheme(root.getAttribute("data-theme") || "dark");
-  });
-})();
-</script>
 <script src="players.js"></script>
 <script src="engine.js"></script>
 <script src="app.js"></script>

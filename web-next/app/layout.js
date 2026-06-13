@@ -39,9 +39,16 @@ const JSON_LD = {
   offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
 };
 
+// Runs before first paint — reads saved theme from localStorage and sets data-theme on <html>
+// so there's no dark→light flash on load. Must be a plain string (no JSX), executed inline.
+const THEME_INIT = `(function(){try{var t=localStorage.getItem('16-0-theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark')}catch(e){}})()`;
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+      </head>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
         <AuthBar />

@@ -2,12 +2,28 @@
 import { useEffect, useState } from "react";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
+function useTheme() {
+  const [theme, setTheme] = useState("dark");
+  useEffect(() => {
+    // Read what the inline script already applied
+    setTheme(document.documentElement.getAttribute("data-theme") || "dark");
+  }, []);
+  const toggle = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("16-0-theme", next); } catch {}
+    setTheme(next);
+  };
+  return { theme, toggle };
+}
+
 export default function AuthBar() {
   const supabase = supabaseBrowser();
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState("");
+  const { theme, toggle } = useTheme();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -33,11 +49,18 @@ export default function AuthBar() {
   const link = { color: "var(--acc2)", textDecoration: "none", fontWeight: 700, fontSize: 14 };
   const input = { width: "100%", padding: "9px 10px", margin: "4px 0", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card2)", color: "var(--txt)" };
 
+  const themeBtn = (
+    <button className="theme-toggle" onClick={toggle} aria-label="Toggle light/dark theme" title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
+      {theme === "dark" ? "☀️" : "🌙"}
+    </button>
+  );
+
   if (user) {
     return (
       <div style={bar}>
         <a href="/leaderboard" style={link}>Leaderboard</a>
         <a href="/profile" style={link}>My streak & history</a>
+        {themeBtn}
         <button className="btn ghost sm" onClick={signOut}>Sign out</button>
       </div>
     );
@@ -46,6 +69,7 @@ export default function AuthBar() {
   return (
     <div style={{ ...bar, position: "relative" }}>
       <a href="/leaderboard" style={link}>Leaderboard</a>
+      {themeBtn}
       <button className="btn sm" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="dialog">Sign in</button>
       {open && (
         <>
