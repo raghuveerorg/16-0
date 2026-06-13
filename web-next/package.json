@@ -5,7 +5,7 @@
   "engines": { "node": ">=20" },
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/sync.mjs && next build",
+    "build": "next build",
     "start": "next start",
     "sync": "node scripts/sync.mjs",
     "test": "node lib/backend.test.js"
