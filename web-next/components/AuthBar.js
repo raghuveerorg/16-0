@@ -80,7 +80,6 @@ export default function AuthBar() {
     <div style={{ ...bar, position: "relative" }}>
       {logoEl}
       <div style={navLinks}>
-      <a href="/leaderboard" style={link}>Leaderboard</a>
       <a href="/how-to-play" style={link}>How to Play</a>
       {themeBtn}
       <button className="btn sm" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="dialog">Sign in</button>

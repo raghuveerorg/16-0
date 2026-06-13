@@ -55,102 +55,128 @@ export default async function Leaderboard({ searchParams }) {
     rows = data ?? []; kind = "points";
   }
 
-  // styles
-  const wrap = { maxWidth: 760, margin: "0 auto", padding: "24px 16px", color: "#eaf0ff", fontFamily: "system-ui, sans-serif" };
-  const row = { display: "flex", gap: 8, flexWrap: "wrap" };
-  const pill = (active, big) => ({
-    padding: big ? "9px 18px" : "6px 13px", borderRadius: 999, fontWeight: 800, fontSize: big ? 14 : 13, textDecoration: "none",
-    color: active ? "#180a06" : "#eaf0ff",
-    background: active ? "linear-gradient(90deg,#ff5a36,#ffb020)" : "transparent",
-    border: active ? "0" : "1px solid #2c3563",
-  });
-  const th = { padding: "10px 8px", textAlign: "left", color: "#9aa6cf", fontSize: 12, textTransform: "uppercase", letterSpacing: ".04em" };
-  const thR = { ...th, textAlign: "right" };
-  const td = { padding: "10px 8px" };
-  const numTd = { ...td, textAlign: "right", fontVariantNumeric: "tabular-nums" };
-
   const modeLabel = MODES.find((m) => m.key === mode).label;
   const winLabel = WINDOWS.find((w) => w.key === win).label;
   const subtitle = mode === "daily"
-    ? (win === "today" ? `Daily Challenge · ${today} (IST)` : `Daily Challenge · ${winLabel.toLowerCase()}`)
-    : `${modeLabel} · ${winLabel.toLowerCase()} · ranked by points (wins + team strength)`;
+    ? (win === "today" ? `${today} · IST` : winLabel)
+    : `${modeLabel} · ${winLabel} · points = wins + strength`;
+
+  // ── shared style tokens ──
+  const chip = (active) => ({
+    padding: "5px 14px", borderRadius: 6, fontWeight: 700, fontSize: 13,
+    textDecoration: "none", whiteSpace: "nowrap",
+    color: active ? "var(--bg)" : "var(--mut)",
+    background: active ? "var(--acc)" : "transparent",
+    border: `1px solid ${active ? "var(--acc)" : "var(--line)"}`,
+  });
+  const num = { fontVariantNumeric: "tabular-nums", fontWeight: 700 };
+  const muted = { color: "var(--mut)", fontSize: 12 };
+
+  const rankEl = (i) => {
+    if (i === 0) return <span style={{ fontSize: 18 }}>🥇</span>;
+    if (i === 1) return <span style={{ fontSize: 18 }}>🥈</span>;
+    if (i === 2) return <span style={{ fontSize: 18 }}>🥉</span>;
+    return <span style={{ ...muted, fontWeight: 700 }}>#{i + 1}</span>;
+  };
 
   return (
-    <main style={wrap}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Link href="/" style={{ color: "#ffb020", textDecoration: "none", fontWeight: 700 }}>← Play</Link>
-        <Link href="/profile" style={{ color: "#ffb020", textDecoration: "none", fontWeight: 700 }}>My streak & history</Link>
+    <main style={{ maxWidth: 680, margin: "0 auto", padding: "24px 16px", color: "var(--txt)" }}>
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 4 }}>
+        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 900 }}>Leaderboard</h1>
+        <span style={muted}>{subtitle}</span>
       </div>
 
-      <h1 style={{ margin: "14px 0 2px", fontSize: 30 }}>Leaderboard</h1>
-      <div style={{ color: "#9aa6cf", fontSize: 14 }}>{subtitle}</div>
-
-      <div style={{ ...row, margin: "16px 0 8px" }}>
+      {/* Mode tabs */}
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", margin: "16px 0 8px" }}>
         {MODES.map((m) => (
-          <Link key={m.key} href={`/leaderboard?mode=${m.key}&tab=${win}`} style={pill(m.key === mode, true)}>{m.label}</Link>
-        ))}
-      </div>
-      <div style={{ ...row, marginBottom: 18 }}>
-        {WINDOWS.map((w) => (
-          <Link key={w.key} href={`/leaderboard?mode=${mode}&tab=${w.key}`} style={pill(w.key === win, false)}>{w.label}</Link>
+          <Link key={m.key} href={`/leaderboard?mode=${m.key}&tab=${win}`} style={chip(m.key === mode)}>{m.label}</Link>
         ))}
       </div>
 
-      {rows.length === 0 ? (
-        <div style={{ color: "#9aa6cf", background: "#161c38", border: "1px solid #2c3563", borderRadius: 14, padding: 28, textAlign: "center" }}>
-          Nothing here yet. <Link href="/" style={{ color: "#ffb020" }}>Play {mode === "daily" ? "the Daily" : modeLabel} →</Link>
+      {/* Window tabs */}
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 20 }}>
+        {WINDOWS.map((w) => (
+          <Link key={w.key} href={`/leaderboard?mode=${mode}&tab=${w.key}`} style={chip(w.key === win)}>{w.label}</Link>
+        ))}
+      </div>
+
+      {/* Column header */}
+      {rows.length > 0 && (
+        <div style={{ display: "flex", alignItems: "center", padding: "0 0 8px", borderBottom: "1px solid var(--line)" }}>
+          <span style={{ width: 44, ...muted }}>Rank</span>
+          <span style={{ flex: 1, ...muted }}>Player</span>
+          {kind === "daily-today" && <span style={{ ...muted, minWidth: 64, textAlign: "right" }}>Record</span>}
+          {kind === "points" && <>
+            <span style={{ ...muted, minWidth: 60, textAlign: "right" }}>Pts</span>
+            <span style={{ ...muted, minWidth: 46, textAlign: "right" }}>16-0</span>
+            <span style={{ ...muted, minWidth: 52, textAlign: "right" }}>Best</span>
+            <span style={{ ...muted, minWidth: 46, textAlign: "right" }}>Plays</span>
+          </>}
+          {kind === "agg" && <>
+            <span style={{ ...muted, minWidth: 46, textAlign: "right" }}>16-0</span>
+            <span style={{ ...muted, minWidth: 52, textAlign: "right" }}>Best</span>
+            <span style={{ ...muted, minWidth: 46, textAlign: "right" }}>Avg</span>
+            <span style={{ ...muted, minWidth: 46, textAlign: "right" }}>Plays</span>
+          </>}
         </div>
-      ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th style={{ ...th, width: 56 }}>Rank</th>
-              <th style={th}>Player</th>
-              {kind === "daily-today" && <th style={thR}>Record</th>}
-              {kind === "points" && <><th style={thR}>Points</th><th style={thR}>16-0</th><th style={thR}>Best</th><th style={thR}>Plays</th></>}
-              {kind === "agg" && <><th style={thR}>16-0</th><th style={thR}>Best</th><th style={thR}>Avg</th><th style={thR}>Plays</th></>}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r, i) => {
-              const mine = myHandle && r.handle === myHandle;
-              return (
-                <tr key={r.handle + i} style={{ borderTop: "1px solid #2c3563", background: mine ? "rgba(255,176,32,.10)" : "transparent" }}>
-                  <td style={{ ...td, fontWeight: 800 }}>{medal(i)}</td>
-                  <td style={{ ...td, fontWeight: mine ? 800 : 600 }}>
-                    {r.handle}{mine ? <span style={{ color: "#ffb020", fontSize: 12, marginLeft: 6 }}>you</span> : null}
-                  </td>
-                  {kind === "daily-today" && (
-                    <td style={{ ...numTd, fontWeight: 800, color: r.wins === 16 ? "#ffcf45" : "#eaf0ff" }}>{r.wins}-{r.losses}</td>
-                  )}
-                  {kind === "points" && (
-                    <>
-                      <td style={{ ...numTd, fontWeight: 800, color: "#ffb020" }}>{Number(r.total_points).toFixed(1)}</td>
-                      <td style={{ ...numTd, color: r.perfects > 0 ? "#ffcf45" : "#7c88b0" }}>{r.perfects}</td>
-                      <td style={numTd}>{r.best}-{16 - r.best}</td>
-                      <td style={{ ...numTd, color: "#9aa6cf" }}>{r.plays}</td>
-                    </>
-                  )}
-                  {kind === "agg" && (
-                    <>
-                      <td style={{ ...numTd, fontWeight: 800, color: r.perfects > 0 ? "#ffcf45" : "#7c88b0" }}>{r.perfects}</td>
-                      <td style={numTd}>{r.best}-{16 - r.best}</td>
-                      <td style={numTd}>{Number(r.avg_wins).toFixed(1)}</td>
-                      <td style={{ ...numTd, color: "#9aa6cf" }}>{r.plays}</td>
-                    </>
-                  )}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
       )}
 
-      <p style={{ color: "#67719c", fontSize: 12, marginTop: 18 }}>
-        {mode === "daily"
-          ? "Daily ranks everyone on the same shared draft each day."
-          : "Classic & IQ are unlimited free play — each game adds points (match wins + your team's combined strength), so stronger teams and more plays both climb."}
-      </p>
+      {/* Rows */}
+      {rows.length === 0 ? (
+        <div style={{ padding: "32px 0", textAlign: "center", color: "var(--mut)" }}>
+          Nothing here yet.{" "}
+          <Link href="/" style={{ color: "var(--acc)", textDecoration: "none", fontWeight: 700 }}>
+            Play {mode === "daily" ? "the Daily" : modeLabel} →
+          </Link>
+        </div>
+      ) : rows.map((r, i) => {
+        const mine = myHandle && r.handle === myHandle;
+        return (
+          <div key={r.handle + i} style={{
+            display: "flex", alignItems: "center",
+            padding: "11px 0",
+            borderBottom: "1px solid var(--line)",
+            background: mine ? "rgba(var(--acc-rgb, 255,135,20), 0.07)" : "transparent",
+            borderLeft: mine ? "3px solid var(--acc)" : "3px solid transparent",
+            paddingLeft: mine ? 8 : 0,
+            marginLeft: mine ? -11 : 0,
+          }}>
+            <span style={{ width: 44, display: "flex", alignItems: "center" }}>{rankEl(i)}</span>
+            <span style={{ flex: 1, fontWeight: mine ? 800 : 500, fontSize: 15 }}>
+              {r.handle}
+              {mine && <span style={{ ...muted, marginLeft: 6, color: "var(--acc)" }}>you</span>}
+            </span>
+
+            {kind === "daily-today" && (
+              <span style={{ ...num, minWidth: 64, textAlign: "right", color: r.wins === 16 ? "var(--acc)" : "var(--txt)", fontSize: 15 }}>
+                {r.wins}–{r.losses}
+              </span>
+            )}
+            {kind === "points" && <>
+              <span style={{ ...num, minWidth: 60, textAlign: "right", color: "var(--acc)" }}>{Number(r.total_points).toFixed(1)}</span>
+              <span style={{ ...num, minWidth: 46, textAlign: "right", color: r.perfects > 0 ? "var(--acc)" : "var(--mut)" }}>{r.perfects}</span>
+              <span style={{ ...num, minWidth: 52, textAlign: "right" }}>{r.best}–{16 - r.best}</span>
+              <span style={{ ...num, minWidth: 46, textAlign: "right", color: "var(--mut)" }}>{r.plays}</span>
+            </>}
+            {kind === "agg" && <>
+              <span style={{ ...num, minWidth: 46, textAlign: "right", color: r.perfects > 0 ? "var(--acc)" : "var(--mut)" }}>{r.perfects}</span>
+              <span style={{ ...num, minWidth: 52, textAlign: "right" }}>{r.best}–{16 - r.best}</span>
+              <span style={{ ...num, minWidth: 46, textAlign: "right" }}>{Number(r.avg_wins).toFixed(1)}</span>
+              <span style={{ ...num, minWidth: 46, textAlign: "right", color: "var(--mut)" }}>{r.plays}</span>
+            </>}
+          </div>
+        );
+      })}
+
+      {rows.length > 0 && (
+        <p style={{ ...muted, marginTop: 16 }}>
+          {mode === "daily"
+            ? "Everyone plays the same draft each day."
+            : "Points = match wins × team strength. More plays and stronger picks both climb."}
+        </p>
+      )}
     </main>
   );
 }
